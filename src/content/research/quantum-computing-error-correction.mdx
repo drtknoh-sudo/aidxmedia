@@ -1,0 +1,65 @@
+---
+title: "양자 컴퓨팅의 오류 수정: 새로운 토폴로지컬 접근법"
+description: "본 연구는 토폴로지컬 큐비트를 활용한 새로운 양자 오류 수정 기법을 제안하며, 기존 방식 대비 10배 향상된 결맞음 시간을 달성했다."
+date: "2026-01-25"
+author: "최현우"
+authorRole: "서울대학교 물리학과"
+category: "research"
+tags: ["양자컴퓨팅", "오류수정", "토폴로지", "물리학"]
+image: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1200"
+featured: false
+---
+
+## Abstract
+
+양자 컴퓨팅의 실용화를 위한 가장 큰 장애물 중 하나는 환경 잡음으로 인한 양자 상태의 결맞음 상실이다. 본 연구에서는 토폴로지컬 보호를 활용한 새로운 오류 수정 기법을 제안한다.
+
+## Introduction
+
+양자 컴퓨터는 특정 계산 문제에서 고전 컴퓨터를 능가하는 성능을 보일 수 있지만, **환경과의 상호작용**으로 인해 양자 정보가 쉽게 손실된다. 이러한 문제를 해결하기 위해 다양한 양자 오류 수정 코드가 개발되어 왔다.
+
+기존의 접근법들은 다음과 같은 한계를 가진다:
+
+- 물리적 큐비트 대비 논리적 큐비트 비율이 낮음
+- 오류 수정을 위한 측정 과정 자체가 추가적인 오류 유발
+- 극저온 환경 유지에 막대한 에너지 소비
+
+## Methods
+
+본 연구에서는 **Majorana 페르미온**을 기반으로 한 토폴로지컬 큐비트를 구현했다. 실험 설정은 다음과 같다:
+
+1. InAs 나노와이어를 Al 초전도체로 코팅
+2. 외부 자기장을 통해 토폴로지컬 상전이 유도
+3. 양 끝에 형성된 Majorana 모드를 큐비트로 활용
+
+```python
+# 토폴로지컬 보호 시뮬레이션 코드 예시
+def compute_majorana_gap(B_field, chemical_potential):
+    """
+    Majorana 갭 에너지를 계산하는 함수
+    """
+    delta = superconducting_gap
+    E_z = zeeman_energy(B_field)
+    return np.sqrt(E_z**2 - delta**2 - chemical_potential**2)
+```
+
+## Results
+
+| 파라미터 | 기존 방식 | 본 연구 |
+|---------|----------|--------|
+| 결맞음 시간 | 100μs | 1ms |
+| 게이트 충실도 | 99.5% | 99.95% |
+| 오류율 | 10⁻³ | 10⁻⁵ |
+
+## Discussion
+
+본 연구 결과는 **내결함성 양자 컴퓨팅**의 실현 가능성을 크게 높였다. 특히 토폴로지컬 보호를 통해 국소적인 잡음에 대한 면역성을 획득함으로써, 기존 오류 수정 기법의 근본적인 한계를 극복했다.
+
+## Conclusion
+
+토폴로지컬 큐비트 기반의 양자 오류 수정 기법은 양자 컴퓨팅의 실용화에 중요한 진전을 나타낸다. 향후 연구에서는 이 기법을 대규모 양자 프로세서에 적용하는 방안을 탐구할 예정이다.
+
+## References
+
+1. Kitaev, A. (2003). Fault-tolerant quantum computation by anyons. *Annals of Physics*, 303(1), 2-30.
+2. Nayak, C., et al. (2008). Non-Abelian anyons and topological quantum computation. *Reviews of Modern Physics*, 80(3), 1083.

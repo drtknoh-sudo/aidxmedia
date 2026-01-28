@@ -1,0 +1,117 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --foreground-rgb: 26, 26, 26;
+  --background-rgb: 255, 255, 255;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-rgb));
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Article Typography */
+.article-content {
+  @apply text-lg leading-relaxed;
+}
+
+.article-content p {
+  @apply mb-6;
+}
+
+.article-content h2 {
+  @apply text-2xl font-serif font-bold mt-10 mb-4;
+}
+
+.article-content h3 {
+  @apply text-xl font-serif font-semibold mt-8 mb-3;
+}
+
+.article-content ul,
+.article-content ol {
+  @apply mb-6 pl-6;
+}
+
+.article-content li {
+  @apply mb-2;
+}
+
+.article-content blockquote {
+  @apply border-l-4 border-primary pl-6 italic my-6 text-gray-700;
+}
+
+.article-content a {
+  @apply text-primary hover:text-primary-dark underline;
+}
+
+.article-content img {
+  @apply rounded-lg my-6;
+}
+
+.article-content figure {
+  @apply my-8;
+}
+
+.article-content figcaption {
+  @apply text-sm text-gray-600 mt-2 text-center;
+}
+
+.article-content pre {
+  @apply bg-gray-100 p-4 rounded-lg overflow-x-auto my-6;
+}
+
+.article-content code {
+  @apply bg-gray-100 px-1.5 py-0.5 rounded text-sm;
+}
+
+.article-content pre code {
+  @apply bg-transparent p-0;
+}
+
+/* Category Colors */
+.category-news {
+  @apply bg-primary text-white;
+}
+
+.category-research {
+  @apply bg-accent-blue text-white;
+}
+
+.category-commentary {
+  @apply bg-accent-green text-white;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Header styles */
+.nav-link {
+  @apply text-sm font-medium tracking-wide uppercase transition-colors hover:text-primary;
+}
+
+.nav-link.active {
+  @apply text-primary;
+}
