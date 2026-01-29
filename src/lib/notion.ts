@@ -2,20 +2,35 @@ import { Client } from "@notionhq/client";
 import { NotionToMarkdown } from "notion-to-md";
 import type { PostMeta, Post, PostCategory } from "./posts";
 
-// Initialize Notion client
-const notion = new Client({
-  auth: process.env.NOTION_API_KEY,
-});
+// Lazy initialization for Notion client (runtime only)
+let notionClient: Client | null = null;
+let n2mClient: NotionToMarkdown | null = null;
 
-// Initialize NotionToMarkdown converter
-const n2m = new NotionToMarkdown({ notionClient: notion });
+function getNotionClient(): Client {
+  if (!notionClient) {
+    notionClient = new Client({
+      auth: process.env.NOTION_API_KEY,
+    });
+  }
+  return notionClient;
+}
 
-// Database IDs for each category (set in environment variables)
-const DATABASE_IDS: Record<PostCategory, string | undefined> = {
-  news: process.env.NOTION_NEWS_DB_ID,
-  research: process.env.NOTION_RESEARCH_DB_ID,
-  commentary: process.env.NOTION_COMMENTARY_DB_ID,
-};
+function getN2MClient(): NotionToMarkdown {
+  if (!n2mClient) {
+    n2mClient = new NotionToMarkdown({ notionClient: getNotionClient() });
+  }
+  return n2mClient;
+}
+
+// Database IDs getter (runtime)
+function getDatabaseId(category: PostCategory): string | undefined {
+  const ids: Record<PostCategory, string | undefined> = {
+    news: process.env.NOTION_NEWS_DB_ID,
+    research: process.env.NOTION_RESEARCH_DB_ID,
+    commentary: process.env.NOTION_COMMENTARY_DB_ID,
+  };
+  return ids[category];
+}
 
 // Type definitions for Notion properties
 interface NotionTitleProperty {
@@ -172,25 +187,19 @@ function notionPageToPostMeta(page: NotionPage, category: PostCategory): PostMet
 }
 
 /**
- * Query Notion database
- */
-async function queryDatabase(params: Parameters<typeof notion.databases.query>[0]) {
-  return notion.databases.query(params);
-}
-
-/**
  * Get all posts from Notion database for a category
  */
 export async function getNotionPosts(category: PostCategory): Promise<PostMeta[]> {
-  const databaseId = DATABASE_IDS[category];
+  const databaseId = getDatabaseId(category);
 
   if (!databaseId || !process.env.NOTION_API_KEY) {
-    console.log(`Notion not configured for category: ${category}`);
+    // Silently return empty - Notion not configured
     return [];
   }
 
   try {
-    const response = await queryDatabase({
+    const notion = getNotionClient();
+    const response = await notion.databases.query({
       database_id: databaseId,
       filter: {
         property: "Published",
@@ -240,15 +249,18 @@ export async function getNotionPostBySlug(
   slug: string,
   category: PostCategory
 ): Promise<Post | null> {
-  const databaseId = DATABASE_IDS[category];
+  const databaseId = getDatabaseId(category);
 
   if (!databaseId || !process.env.NOTION_API_KEY) {
     return null;
   }
 
   try {
+    const notion = getNotionClient();
+    const n2m = getN2MClient();
+
     // Search for the page by slug
-    const response = await queryDatabase({
+    const response = await notion.databases.query({
       database_id: databaseId,
       filter: {
         or: [
