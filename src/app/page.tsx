@@ -1,12 +1,15 @@
 import ArticleCard from "@/components/ArticleCard";
-import { getAllPosts, getFeaturedPosts, getLatestPosts } from "@/lib/posts";
+import { getUnifiedPosts, getUnifiedFeaturedPosts, getUnifiedLatestPosts } from "@/lib/unified-posts";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
-export default function Home() {
-  const featuredPosts = getFeaturedPosts();
-  const latestPosts = getLatestPosts(8);
-  const allPosts = getAllPosts();
+// Enable ISR with 60 second revalidation
+export const revalidate = 60;
+
+export default async function Home() {
+  const featuredPosts = await getUnifiedFeaturedPosts();
+  const latestPosts = await getUnifiedLatestPosts(8);
+  const allPosts = await getUnifiedPosts();
 
   // Get main featured post and secondary featured posts
   const mainFeatured = featuredPosts[0] || latestPosts[0];
@@ -133,7 +136,7 @@ export default function Home() {
           <div className="text-center py-12">
             <p className="text-gray-500 mb-4">No articles published yet.</p>
             <p className="text-gray-400 text-sm">
-              Add MDX files to the src/content folder to create articles.
+              Add MDX files to the src/content folder or connect Notion to create articles.
             </p>
           </div>
         )}

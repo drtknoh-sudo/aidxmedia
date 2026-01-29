@@ -2,7 +2,8 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Calendar, User, Tag } from "lucide-react";
-import { getPostBySlug, getPostSlugs } from "@/lib/posts";
+import { getPostSlugs } from "@/lib/posts";
+import { getUnifiedPostBySlug } from "@/lib/unified-posts";
 import { formatDate, getCategoryColor, getCategoryLabel } from "@/lib/utils";
 import MDXContent from "@/components/MDXContent";
 import { Metadata } from "next";
@@ -10,6 +11,12 @@ import { Metadata } from "next";
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
+
+// Enable ISR with 60 second revalidation
+export const revalidate = 60;
+
+// Enable dynamic params for Notion posts
+export const dynamicParams = true;
 
 export async function generateStaticParams() {
   const slugs = getPostSlugs("research");
@@ -20,14 +27,14 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = getPostBySlug(slug, "research");
+  const post = await getUnifiedPostBySlug(slug, "research");
 
   if (!post) {
     return { title: "Article Not Found" };
   }
 
   return {
-    title: `${post.title} - Science Journal`,
+    title: `${post.title} - Trutha ai`,
     description: post.description,
     openGraph: {
       title: post.title,
@@ -40,7 +47,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function ResearchArticlePage({ params }: PageProps) {
   const { slug } = await params;
-  const post = getPostBySlug(slug, "research");
+  const post = await getUnifiedPostBySlug(slug, "research");
 
   if (!post) {
     notFound();
@@ -68,6 +75,7 @@ export default async function ResearchArticlePage({ params }: PageProps) {
             fill
             className="object-cover"
             priority
+            unoptimized={post.image.startsWith('http')}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
         </div>

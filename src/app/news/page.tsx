@@ -1,21 +1,24 @@
 import ArticleCard from "@/components/ArticleCard";
-import { getAllPosts } from "@/lib/posts";
+import { getUnifiedPosts } from "@/lib/unified-posts";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "News - Science Journal",
-  description: "최신 과학 뉴스와 발견을 확인하세요",
+  title: "News - Trutha ai",
+  description: "Latest AI news and verified intelligence updates",
 };
 
-export default function NewsPage() {
-  const posts = getAllPosts("news");
+// Enable ISR with 60 second revalidation
+export const revalidate = 60;
+
+export default async function NewsPage() {
+  const posts = await getUnifiedPosts("news");
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 animate-fade-in">
       {/* Page Header */}
       <div className="border-b-4 border-primary pb-4 mb-8">
         <h1 className="text-4xl font-serif font-bold">News</h1>
-        <p className="text-gray-600 mt-2">최신 과학 뉴스와 발견</p>
+        <p className="text-gray-600 mt-2">Latest AI news and verified intelligence updates</p>
       </div>
 
       {/* Articles Grid */}
@@ -27,10 +30,10 @@ export default function NewsPage() {
         </div>
       ) : (
         <div className="text-center py-16">
-          <p className="text-gray-500 text-lg mb-4">아직 등록된 뉴스가 없습니다.</p>
+          <p className="text-gray-500 text-lg mb-4">No news articles published yet.</p>
           <p className="text-gray-400">
-            <code className="bg-gray-100 px-2 py-1 rounded">src/content/news/</code> 폴더에
-            MDX 파일을 추가하여 뉴스를 작성하세요.
+            Add MDX files to <code className="bg-gray-100 px-2 py-1 rounded">src/content/news/</code> or
+            connect Notion to create news articles.
           </p>
         </div>
       )}

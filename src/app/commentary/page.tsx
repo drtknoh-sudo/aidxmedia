@@ -1,21 +1,24 @@
 import ArticleCard from "@/components/ArticleCard";
-import { getAllPosts } from "@/lib/posts";
+import { getUnifiedPosts } from "@/lib/unified-posts";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Commentary - Science Journal",
-  description: "과학에 대한 전문가 논평과 의견을 확인하세요",
+  title: "Commentary - Trutha ai",
+  description: "Expert commentary and insights on AI development",
 };
 
-export default function CommentaryPage() {
-  const posts = getAllPosts("commentary");
+// Enable ISR with 60 second revalidation
+export const revalidate = 60;
+
+export default async function CommentaryPage() {
+  const posts = await getUnifiedPosts("commentary");
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 animate-fade-in">
       {/* Page Header */}
       <div className="border-b-4 border-accent-green pb-4 mb-8">
         <h1 className="text-4xl font-serif font-bold">Commentary</h1>
-        <p className="text-gray-600 mt-2">과학에 대한 전문가 논평과 의견</p>
+        <p className="text-gray-600 mt-2">Expert commentary and insights on AI development</p>
       </div>
 
       {/* Articles Grid */}
@@ -27,10 +30,10 @@ export default function CommentaryPage() {
         </div>
       ) : (
         <div className="text-center py-16">
-          <p className="text-gray-500 text-lg mb-4">아직 등록된 논평이 없습니다.</p>
+          <p className="text-gray-500 text-lg mb-4">No commentary published yet.</p>
           <p className="text-gray-400">
-            <code className="bg-gray-100 px-2 py-1 rounded">src/content/commentary/</code> 폴더에
-            MDX 파일을 추가하여 논평을 작성하세요.
+            Add MDX files to <code className="bg-gray-100 px-2 py-1 rounded">src/content/commentary/</code> or
+            connect Notion to create commentary.
           </p>
         </div>
       )}
