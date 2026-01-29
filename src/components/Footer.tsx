@@ -7,12 +7,14 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* About */}
           <div className="col-span-1 md:col-span-2">
-            <h2 className="text-2xl font-serif font-bold text-primary mb-4">
-              Science Journal
+            <h2 className="text-2xl font-sans mb-4">
+              <span className="font-bold text-white">Trutha</span>
+              <span className="font-light text-primary-light ml-0.5">ai</span>
             </h2>
             <p className="text-gray-400 leading-relaxed">
-              과학의 최신 뉴스와 연구 논문을 전달합니다.
-              과학적 발견과 혁신적인 연구를 통해 세상을 이해하는 새로운 시각을 제공합니다.
+              Building trusted standards for AI-driven decision-making.
+              An independent verification platform that brings transparency,
+              accountability, and evidence-based insights to the age of artificial intelligence.
             </p>
           </div>
 
@@ -21,23 +23,28 @@ export default function Footer() {
             <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2 text-gray-400">
               <li>
-                <Link href="/news" className="hover:text-white transition-colors">
+                <Link href="/news" className="hover:text-accent-teal transition-colors">
                   News
                 </Link>
               </li>
               <li>
-                <Link href="/research" className="hover:text-white transition-colors">
+                <Link href="/research" className="hover:text-accent-teal transition-colors">
                   Research
                 </Link>
               </li>
               <li>
-                <Link href="/commentary" className="hover:text-white transition-colors">
+                <Link href="/commentary" className="hover:text-accent-teal transition-colors">
                   Commentary
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="hover:text-white transition-colors">
-                  About Us
+                <Link href="/aidx-odn" className="hover:text-accent-teal transition-colors">
+                  AIDX ODN
+                </Link>
+              </li>
+              <li>
+                <Link href="/services" className="hover:text-accent-teal transition-colors">
+                  Services
                 </Link>
               </li>
             </ul>
@@ -48,26 +55,31 @@ export default function Footer() {
             <h3 className="text-lg font-semibold mb-4">Contact</h3>
             <ul className="space-y-2 text-gray-400">
               <li>
-                <a href="mailto:contact@sciencejournal.com" className="hover:text-white transition-colors">
-                  contact@sciencejournal.com
+                <a href="mailto:contact@trutha.ai" className="hover:text-accent-teal transition-colors">
+                  contact@trutha.ai
                 </a>
               </li>
               <li>
-                <Link href="/submit" className="hover:text-white transition-colors">
-                  Submit an Article
+                <Link href="/services" className="hover:text-accent-teal transition-colors">
+                  Request Consultation
                 </Link>
               </li>
               <li>
-                <Link href="/advertise" className="hover:text-white transition-colors">
-                  Advertise
-                </Link>
+                <a
+                  href="https://odn.dinnomix.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-accent-teal transition-colors"
+                >
+                  ODN Platform
+                </a>
               </li>
             </ul>
           </div>
         </div>
 
         <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-500 text-sm">
-          <p>&copy; {new Date().getFullYear()} Science Journal. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Trutha ai. All rights reserved.</p>
         </div>
       </div>
     </footer>

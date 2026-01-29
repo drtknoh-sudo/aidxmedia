@@ -1,10 +1,10 @@
 import { format, parseISO } from "date-fns";
-import { ko } from "date-fns/locale";
+import { enUS } from "date-fns/locale";
 
-export function formatDate(dateString: string, formatStr: string = "yyyy년 MM월 dd일"): string {
+export function formatDate(dateString: string, formatStr: string = "MMMM d, yyyy"): string {
   try {
     const date = parseISO(dateString);
-    return format(date, formatStr, { locale: ko });
+    return format(date, formatStr, { locale: enUS });
   } catch {
     return dateString;
   }
@@ -13,7 +13,7 @@ export function formatDate(dateString: string, formatStr: string = "yyyy년 MM�
 export function formatDateShort(dateString: string): string {
   try {
     const date = parseISO(dateString);
-    return format(date, "d MMM yyyy", { locale: ko });
+    return format(date, "d MMM yyyy", { locale: enUS });
   } catch {
     return dateString;
   }
@@ -24,7 +24,7 @@ export function getCategoryColor(category: string): string {
     case "news":
       return "bg-primary";
     case "research":
-      return "bg-accent-blue";
+      return "bg-accent-teal";
     case "commentary":
       return "bg-accent-green";
     default:
@@ -35,11 +35,11 @@ export function getCategoryColor(category: string): string {
 export function getCategoryLabel(category: string): string {
   switch (category.toLowerCase()) {
     case "news":
-      return "뉴스";
+      return "News";
     case "research":
-      return "연구";
+      return "Research";
     case "commentary":
-      return "논평";
+      return "Commentary";
     default:
       return category;
   }

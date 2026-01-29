@@ -10,18 +10,19 @@ const config: Config = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: "#c1272d",
-          dark: "#a11f24",
-          light: "#e53935",
+          DEFAULT: "#0F4C81",    // Deep Navy Blue - 신뢰, 권위
+          dark: "#0A3A63",       // Darker Navy
+          light: "#1E6CB5",      // Lighter Blue
         },
         secondary: {
-          DEFAULT: "#1a1a1a",
-          light: "#333333",
+          DEFAULT: "#1A1A2E",    // Deep Dark Blue-Black
+          light: "#16213E",
         },
         accent: {
-          blue: "#1976d2",
-          green: "#388e3c",
-          orange: "#f57c00",
+          blue: "#3B82F6",       // Research 카테고리
+          green: "#10B981",      // Commentary 카테고리
+          gold: "#D4AF37",       // Premium/Trust 강조
+          teal: "#0D9488",       // 하이라이트
         },
       },
       fontFamily: {
@@ -34,9 +35,9 @@ const config: Config = {
             maxWidth: "none",
             color: "#1a1a1a",
             a: {
-              color: "#c1272d",
+              color: "#0F4C81",
               "&:hover": {
-                color: "#a11f24",
+                color: "#1E6CB5",
               },
             },
             h1: {

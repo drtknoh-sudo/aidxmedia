@@ -1,0 +1,74 @@
+---
+title: "Progress in AI Alignment: From Theory to Practice"
+description: "Survey of recent advances in AI alignment research, examining practical techniques for ensuring AI systems behave according to human values."
+date: "2026-01-15"
+author: "Dr. Nathan Brooks"
+authorRole: "AI Alignment Researcher, Trutha.ai"
+category: "research"
+tags: ["AI Alignment", "Value Learning", "RLHF", "AI Safety", "Ethics"]
+image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200"
+featured: false
+---
+
+This survey examines recent progress in AI alignment research, focusing on practical techniques that have demonstrated success in ensuring AI systems behave according to human values and intentions.
+
+## The Alignment Challenge
+
+As AI systems become more capable, ensuring they remain aligned with human values becomes increasingly critical. This paper surveys the current state of alignment research and practical implementation strategies.
+
+## Theoretical Foundations
+
+### Value Learning Frameworks
+
+Current approaches to value learning include:
+
+1. **Inverse Reinforcement Learning**: Inferring values from observed behavior
+2. **Debate**: Using adversarial processes to surface true preferences
+3. **Recursive Reward Modeling**: Hierarchical value specification
+4. **Constitutional AI**: Embedding values through principle-based training
+
+### Scalable Oversight
+
+The challenge of overseeing systems more capable than human evaluators has driven several innovations:
+
+- **Weak-to-strong generalization**: Training strong models with weak supervision
+- **Interpretability tools**: Making model reasoning transparent
+- **Sandboxing**: Safe evaluation environments for capability testing
+
+## Empirical Progress
+
+| Technique | Alignment Score | Capability Retention | Robustness |
+|-----------|----------------|---------------------|------------|
+| Base RLHF | 72% | 98% | 61% |
+| Constitutional AI | 84% | 96% | 78% |
+| Debate-augmented | 81% | 94% | 82% |
+| Combined approach | 91% | 95% | 86% |
+
+## Implementation Challenges
+
+### Specification Problems
+
+Precisely specifying human values remains difficult:
+
+- **Goodhart's Law**: Optimizing proxies can diverge from true objectives
+- **Value complexity**: Human values are contextual and often contradictory
+- **Distribution shift**: Values may differ across contexts and populations
+
+### Verification Gaps
+
+Current verification methods have limitations:
+
+- Adversarial probing reveals only known failure modes
+- Behavioral testing cannot guarantee internal alignment
+- Formal verification scales poorly with model complexity
+
+## Path Forward
+
+Achieving robust alignment requires:
+
+1. **Multi-stakeholder input**: Diverse perspectives in value specification
+2. **Continuous monitoring**: Ongoing evaluation throughout deployment
+3. **Human oversight**: Maintaining meaningful human control
+4. **Institutional frameworks**: Governance structures supporting alignment
+
+The development of independent verification and trust infrastructure will be essential for ensuring alignment claims can be validated.

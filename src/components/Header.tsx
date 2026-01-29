@@ -8,7 +8,8 @@ const navItems = [
   { name: "NEWS", href: "/news" },
   { name: "RESEARCH", href: "/research" },
   { name: "COMMENTARY", href: "/commentary" },
-  { name: "ABOUT", href: "/about" },
+  { name: "AIDX ODN", href: "/aidx-odn" },
+  { name: "SERVICES", href: "/services" },
 ];
 
 export default function Header() {
@@ -42,8 +43,9 @@ export default function Header() {
 
           {/* Logo */}
           <Link href="/" className="flex-shrink-0">
-            <h1 className="text-3xl md:text-4xl font-serif font-bold text-primary tracking-tight">
-              Science Journal
+            <h1 className="text-3xl md:text-4xl font-sans tracking-tight">
+              <span className="font-bold text-primary">Trutha</span>
+              <span className="font-light text-primary-light ml-0.5">ai</span>
             </h1>
           </Link>
 
@@ -63,7 +65,7 @@ export default function Header() {
               <li key={item.name}>
                 <Link
                   href={item.href}
-                  className="text-sm font-medium tracking-wider hover:text-primary-light transition-colors"
+                  className="text-sm font-medium tracking-wider hover:text-accent-teal transition-colors"
                 >
                   {item.name}
                 </Link>
@@ -78,7 +80,7 @@ export default function Header() {
                 <li key={item.name}>
                   <Link
                     href={item.href}
-                    className="block text-sm font-medium tracking-wider hover:text-primary-light transition-colors"
+                    className="block text-sm font-medium tracking-wider hover:text-accent-teal transition-colors"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     {item.name}
