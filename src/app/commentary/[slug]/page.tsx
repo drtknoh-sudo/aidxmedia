@@ -1,10 +1,10 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, Calendar, User, Tag } from "lucide-react";
+import { ArrowLeft, MessageSquare } from "lucide-react";
 import { getPostSlugs } from "@/lib/posts";
 import { getUnifiedPostBySlug } from "@/lib/unified-posts";
-import { formatDate, getCategoryColor, getCategoryLabel } from "@/lib/utils";
+import { AuthorProfile, KeyTakeaways } from "@/components/commentary";
 import MDXContent from "@/components/MDXContent";
 import { Metadata } from "next";
 
@@ -17,6 +17,12 @@ export const revalidate = 60;
 
 // Enable dynamic params for Notion posts
 export const dynamicParams = true;
+
+// Estimate reading time
+function estimateReadingTime(content: string): number {
+  const wordCount = content.split(/\s+/).length;
+  return Math.max(5, Math.ceil(wordCount / 200));
+}
 
 export async function generateStaticParams() {
   const slugs = getPostSlugs("commentary");
@@ -34,7 +40,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   return {
-    title: `${post.title} - Trutha ai`,
+    title: `${post.title} - Commentary | Trutha ai`,
     description: post.description,
     openGraph: {
       title: post.title,
@@ -53,98 +59,85 @@ export default async function CommentaryArticlePage({ params }: PageProps) {
     notFound();
   }
 
+  const readingTime = estimateReadingTime(post.content);
+
   return (
     <article className="animate-fade-in">
       {/* Back Link */}
       <div className="max-w-4xl mx-auto px-4 py-6">
         <Link
           href="/commentary"
-          className="inline-flex items-center gap-2 text-gray-600 hover:text-primary transition-colors"
+          className="inline-flex items-center gap-2 text-gray-600 hover:text-accent-green transition-colors"
         >
           <ArrowLeft size={18} />
           <span>Back to Commentary</span>
         </Link>
       </div>
 
-      {/* Hero Image */}
-      {post.image && (
-        <div className="relative aspect-[21/9] max-h-[500px] overflow-hidden bg-gray-200">
-          <Image
-            src={post.image}
-            alt={post.title}
-            fill
-            className="object-cover"
-            priority
-            unoptimized={post.image.startsWith('http')}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-        </div>
-      )}
-
-      {/* Article Header */}
+      {/* Article Header - Editorial Style */}
       <header className="max-w-4xl mx-auto px-4 py-8">
-        <span
-          className={`inline-block px-3 py-1 text-xs font-semibold uppercase tracking-wider rounded ${getCategoryColor(
-            post.category
-          )} text-white mb-4`}
-        >
-          {getCategoryLabel(post.category)}
-        </span>
+        {/* Category Badge */}
+        <div className="flex items-center gap-2 mb-6">
+          <span className="text-accent-green text-sm font-semibold uppercase tracking-wider">
+            Opinion
+          </span>
+        </div>
 
-        <h1 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold leading-tight mb-6">
+        {/* Title */}
+        <h1 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold leading-tight mb-8 text-gray-900">
           {post.title}
         </h1>
 
-        <p className="text-xl text-gray-600 mb-6">{post.description}</p>
+        {/* Author Profile Box */}
+        <AuthorProfile
+          author={post.author}
+          authorRole={post.authorRole}
+          date={post.date}
+          readingTime={readingTime}
+        />
 
-        <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 border-y border-gray-200 py-4">
-          <div className="flex items-center gap-2">
-            <User size={16} />
-            <span>
-              {post.author}
-              {post.authorRole && (
-                <span className="text-gray-400"> · {post.authorRole}</span>
-              )}
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Calendar size={16} />
-            <time dateTime={post.date}>{formatDate(post.date)}</time>
-          </div>
-        </div>
-
-        {/* Tags */}
-        {post.tags.length > 0 && (
-          <div className="flex items-center gap-2 mt-4 flex-wrap">
-            <Tag size={16} className="text-gray-400" />
-            {post.tags.map((tag) => (
-              <span
-                key={tag}
-                className="px-2 py-1 bg-gray-100 rounded text-xs text-gray-600"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-        )}
+        {/* Key Takeaways */}
+        <KeyTakeaways description={post.description} tags={post.tags} />
       </header>
 
-      {/* Article Content */}
-      <div className="max-w-4xl mx-auto px-4 pb-16">
-        <div className="prose prose-lg max-w-none">
+      {/* Hero Image */}
+      {post.image && (
+        <div className="max-w-5xl mx-auto px-4 mb-12">
+          <div className="relative aspect-[21/9] overflow-hidden rounded-lg bg-gray-200">
+            <Image
+              src={post.image}
+              alt={post.title}
+              fill
+              className="object-cover"
+              priority
+              unoptimized={post.image.startsWith("http")}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Article Content - Editorial Typography */}
+      <div className="max-w-3xl mx-auto px-4 pb-16">
+        <div className="prose prose-lg max-w-none prose-headings:font-serif prose-headings:text-gray-900 prose-p:text-gray-700 prose-p:leading-relaxed prose-p:text-lg prose-a:text-accent-green prose-a:no-underline hover:prose-a:underline prose-blockquote:border-l-accent-green prose-blockquote:bg-accent-green/5 prose-blockquote:py-4 prose-blockquote:px-6 prose-blockquote:rounded-r-lg prose-blockquote:not-italic prose-blockquote:font-serif prose-blockquote:text-xl">
           <MDXContent source={post.content} />
         </div>
       </div>
 
-      {/* Share & Navigation */}
+      {/* Footer Navigation */}
       <div className="max-w-4xl mx-auto px-4 py-8 border-t border-gray-200">
-        <Link
-          href="/commentary"
-          className="inline-flex items-center gap-2 text-primary hover:text-primary-dark transition-colors font-semibold"
-        >
-          <ArrowLeft size={18} />
-          <span>Back to Commentary</span>
-        </Link>
+        <div className="flex items-center justify-between">
+          <Link
+            href="/commentary"
+            className="inline-flex items-center gap-2 text-accent-green hover:text-accent-green/80 transition-colors font-semibold"
+          >
+            <ArrowLeft size={18} />
+            <span>Back to Commentary</span>
+          </Link>
+          <div className="flex items-center gap-2 text-gray-500 text-sm">
+            <MessageSquare size={16} />
+            <span>Trutha ai Commentary</span>
+          </div>
+        </div>
       </div>
     </article>
   );
