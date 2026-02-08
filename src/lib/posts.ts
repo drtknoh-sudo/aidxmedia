@@ -17,6 +17,7 @@ export interface PostMeta {
   tags: string[];
   image?: string;
   featured?: boolean;
+  reportUrl?: string;
 }
 
 export interface Post extends PostMeta {
@@ -55,6 +56,7 @@ export function getPostBySlug(slug: string, category: PostCategory): Post | null
     tags: data.tags || [],
     image: data.image,
     featured: data.featured || false,
+    reportUrl: data.reportUrl,
     content,
   };
 }

@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, Calendar, User, FileText, BookOpen } from "lucide-react";
+import { ArrowLeft, Calendar, User, FileText, BookOpen, ExternalLink } from "lucide-react";
 import { getPostSlugs } from "@/lib/posts";
 import { getUnifiedPostBySlug } from "@/lib/unified-posts";
 import { formatDate } from "@/lib/utils";
@@ -106,6 +106,21 @@ export default async function ResearchArticlePage({ params }: PageProps) {
             <KeyFindings tags={post.tags} />
           </div>
         </div>
+
+        {/* Full Report Button */}
+        {post.reportUrl && (
+          <div className="mb-8">
+            <a
+              href={post.reportUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-accent-teal text-white font-semibold rounded-lg hover:bg-accent-teal/90 transition-colors shadow-md"
+            >
+              <ExternalLink size={18} />
+              전체 리포트 보기 (Interactive Report)
+            </a>
+          </div>
+        )}
       </header>
 
       {/* Hero Image */}

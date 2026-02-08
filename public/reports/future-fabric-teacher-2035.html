@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Future Fabric 3.0 — 한국 초등학교 교사 미래 설계</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Space+Grotesk:wght@400;500;700&display=swap');
+
+  :root {
+    --bg: #0a0e17;
+    --bg2: #111827;
+    --bg3: #1a2234;
+    --surface: #1e293b;
+    --surface2: #253349;
+    --border: #334155;
+    --text: #e2e8f0;
+    --text2: #94a3b8;
+    --text3: #64748b;
+    --accent: #3b82f6;
+    --accent2: #60a5fa;
+    --accent-glow: rgba(59,130,246,0.3);
+    --green: #10b981;
+    --green-glow: rgba(16,185,129,0.3);
+    --red: #ef4444;
+    --red-glow: rgba(239,68,68,0.3);
+    --yellow: #f59e0b;
+    --yellow-glow: rgba(245,158,11,0.3);
+    --purple: #8b5cf6;
+    --purple-glow: rgba(139,92,246,0.3);
+    --pink: #ec4899;
+    --cyan: #06b6d4;
+    --orange: #f97316;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+  /* Navigation */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    background: rgba(10,14,23,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+  nav.scrolled { box-shadow: 0 4px 30px rgba(0,0,0,0.5); }
+  .nav-inner {
+    max-width: 1400px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.75rem 2rem;
+  }
+  .nav-logo { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.1rem; color: var(--accent2); }
+  .nav-links { display: flex; gap: 0.25rem; }
+  .nav-links a {
+    color: var(--text2); text-decoration: none; font-size: 0.8rem;
+    padding: 0.4rem 0.75rem; border-radius: 6px; transition: all 0.2s;
+  }
+  .nav-links a:hover, .nav-links a.active { color: var(--text); background: var(--surface); }
+
+  /* Sections */
+  section { padding: 5rem 2rem; max-width: 1400px; margin: 0 auto; }
+  .section-label {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.7rem; font-weight: 500; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 0.75rem;
+  }
+  .section-title {
+    font-size: 2.2rem; font-weight: 900; margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--text) 0%, var(--accent2) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .section-desc { color: var(--text2); font-size: 1rem; max-width: 700px; margin-bottom: 3rem; }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; text-align: center;
+    position: relative; overflow: hidden; padding-top: 4rem;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(59,130,246,0.15), transparent),
+      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(139,92,246,0.1), transparent),
+      radial-gradient(ellipse 60% 40% at 20% 80%, rgba(16,185,129,0.08), transparent);
+  }
+  .hero-content { position: relative; z-index: 1; }
+  .hero-badge {
+    display: inline-block; padding: 0.4rem 1.2rem;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 100px;
+    font-size: 0.75rem; color: var(--accent2); margin-bottom: 2rem;
+    font-family: 'Space Grotesk', sans-serif; letter-spacing: 1px;
+  }
+  .hero h1 {
+    font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 900;
+    line-height: 1.2; margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, #fff 0%, var(--accent2) 50%, var(--purple) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .hero p { font-size: 1.15rem; color: var(--text2); max-width: 600px; margin: 0 auto 3rem; }
+  .hero-meta {
+    display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap;
+    font-size: 0.85rem; color: var(--text3);
+  }
+  .hero-meta span { display: flex; align-items: center; gap: 0.4rem; }
+  .hero-meta .dot { width: 6px; height: 6px; border-radius: 50%; }
+  .scroll-indicator {
+    position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+    animation: bounce 2s infinite;
+  }
+  .scroll-indicator svg { width: 24px; height: 24px; color: var(--text3); }
+  @keyframes bounce {
+    0%,20%,50%,80%,100% { transform: translateX(-50%) translateY(0); }
+    40% { transform: translateX(-50%) translateY(-8px); }
+    60% { transform: translateX(-50%) translateY(-4px); }
+  }
+
+  /* Stats Grid */
+  .stats-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem; margin-bottom: 3rem;
+  }
+  .stat-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.5rem;
+    transition: all 0.3s;
+  }
+  .stat-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 0 20px var(--accent-glow);
+    transform: translateY(-2px);
+  }
+  .stat-value {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 2rem; font-weight: 700; color: var(--accent2);
+  }
+  .stat-label { font-size: 0.8rem; color: var(--text2); margin-top: 0.25rem; }
+  .stat-change { font-size: 0.75rem; margin-top: 0.5rem; }
+  .stat-change.down { color: var(--red); }
+  .stat-change.up { color: var(--green); }
+
+  /* Task Atoms */
+  .task-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 0.75rem;
+  }
+  .task-atom {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 1rem 1.25rem;
+    transition: all 0.3s; cursor: default;
+  }
+  .task-atom:hover { border-color: var(--accent); }
+  .task-name { font-size: 0.9rem; font-weight: 500; }
+  .task-badge {
+    font-size: 0.65rem; font-weight: 700; padding: 0.2rem 0.6rem;
+    border-radius: 100px; letter-spacing: 0.5px;
+  }
+  .task-badge.high { background: rgba(239,68,68,0.15); color: var(--red); }
+  .task-badge.medium { background: rgba(245,158,11,0.15); color: var(--yellow); }
+  .task-badge.low { background: rgba(16,185,129,0.15); color: var(--green); }
+
+  /* Timeline */
+  .timeline-container { position: relative; }
+  .timeline-track {
+    display: flex; gap: 0; overflow-x: auto;
+    padding: 2rem 0; scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+  .timeline-track::-webkit-scrollbar { height: 4px; }
+  .timeline-track::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+  .tp-card {
+    min-width: 320px; max-width: 320px;
+    scroll-snap-align: start;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 1.75rem;
+    margin-right: 1rem; cursor: pointer;
+    transition: all 0.3s; position: relative; overflow: hidden;
+  }
+  .tp-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--purple));
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .tp-card:hover::before, .tp-card.active::before { opacity: 1; }
+  .tp-card:hover, .tp-card.active {
+    border-color: var(--accent);
+    box-shadow: 0 8px 30px var(--accent-glow);
+    transform: translateY(-4px);
+  }
+  .tp-year {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 2px;
+    color: var(--accent); margin-bottom: 0.5rem;
+  }
+  .tp-actual-year { color: var(--text3); font-weight: 400; }
+  .tp-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem; line-height: 1.4; }
+  .tp-badges { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+  .tp-rev-badge {
+    font-size: 0.6rem; font-weight: 700; padding: 0.15rem 0.5rem;
+    border-radius: 4px; letter-spacing: 0.5px; text-transform: uppercase;
+  }
+  .tp-rev-badge.irreversible { background: rgba(239,68,68,0.15); color: var(--red); }
+  .tp-rev-badge.conditional { background: rgba(245,158,11,0.15); color: var(--yellow); }
+  .tp-anxiety-dots { display: flex; gap: 0.3rem; }
+  .anxiety-dot {
+    width: 28px; height: 28px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.6rem; font-weight: 700;
+  }
+
+  /* Detail Panel */
+  .detail-panel {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 16px; margin-top: 2rem;
+    overflow: hidden; max-height: 0;
+    transition: max-height 0.5s ease, padding 0.5s ease, opacity 0.3s;
+    opacity: 0;
+  }
+  .detail-panel.open {
+    max-height: 3000px; opacity: 1;
+  }
+  .detail-inner { padding: 2.5rem; }
+  .detail-header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;
+  }
+  .detail-year {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 3rem; font-weight: 700; color: var(--accent);
+    line-height: 1;
+  }
+  .detail-title { font-size: 1.5rem; font-weight: 700; margin-top: 0.5rem; }
+  .detail-close {
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--text2); width: 36px; height: 36px; border-radius: 8px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; transition: all 0.2s;
+  }
+  .detail-close:hover { background: var(--red); color: #fff; border-color: var(--red); }
+  .detail-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+  .detail-block {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.5rem;
+  }
+  .detail-block h4 {
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 1rem;
+  }
+  .detail-block p, .detail-block li {
+    font-size: 0.9rem; color: var(--text2); line-height: 1.8;
+  }
+  .detail-block ul { padding-left: 1.2rem; }
+  .driver-tag {
+    display: inline-block; background: var(--bg); border: 1px solid var(--border);
+    border-radius: 6px; padding: 0.2rem 0.6rem; font-size: 0.75rem;
+    margin: 0.2rem; color: var(--text2);
+  }
+  .prep-track {
+    background: var(--bg); border-radius: 8px; padding: 1rem;
+    margin-top: 0.75rem;
+  }
+  .prep-track-label {
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; margin-bottom: 0.5rem;
+  }
+  .prep-track-label.survive { color: var(--green); }
+  .prep-track-label.transition { color: var(--purple); }
+
+  /* Anxiety Map */
+  .anxiety-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+  }
+  .anxiety-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.5rem; position: relative; overflow: hidden;
+    transition: all 0.3s;
+  }
+  .anxiety-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .anxiety-id {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.65rem; font-weight: 700; letter-spacing: 2px;
+    color: var(--text3); margin-bottom: 0.5rem;
+  }
+  .anxiety-name { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; }
+  .anxiety-bar-bg {
+    height: 6px; background: var(--bg); border-radius: 3px;
+    margin-bottom: 0.75rem; overflow: hidden;
+  }
+  .anxiety-bar {
+    height: 100%; border-radius: 3px;
+    transition: width 1s ease;
+  }
+  .anxiety-years {
+    display: flex; gap: 0.3rem; flex-wrap: wrap; margin-bottom: 0.75rem;
+  }
+  .anxiety-year-tag {
+    font-size: 0.65rem; font-weight: 600;
+    padding: 0.1rem 0.4rem; border-radius: 4px;
+  }
+  .anxiety-year-tag.peak { background: rgba(239,68,68,0.15); color: var(--red); }
+  .anxiety-year-tag.resolve { background: rgba(16,185,129,0.15); color: var(--green); }
+  .anxiety-mitigation { font-size: 0.8rem; color: var(--text3); line-height: 1.6; }
+
+  /* Platform Evolution */
+  .platform-timeline {
+    display: flex; gap: 1.5rem; margin-top: 2rem;
+    overflow-x: auto; padding-bottom: 1rem;
+  }
+  .platform-phase {
+    min-width: 350px; background: var(--surface);
+    border: 1px solid var(--border); border-radius: 16px;
+    padding: 2rem; position: relative;
+  }
+  .platform-phase::after {
+    content: ''; position: absolute; right: -1.5rem; top: 50%;
+    transform: translateY(-50%);
+    width: 0; height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-left: 10px solid var(--border);
+  }
+  .platform-phase:last-child::after { display: none; }
+  .phase-label {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 2px;
+    margin-bottom: 0.5rem;
+  }
+  .phase-status {
+    font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;
+  }
+  .criteria-list { list-style: none; }
+  .criteria-item {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.85rem; padding: 0.4rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .criteria-dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  }
+  .criteria-dot.yes { background: var(--green); box-shadow: 0 0 6px var(--green-glow); }
+  .criteria-dot.partial { background: var(--yellow); box-shadow: 0 0 6px var(--yellow-glow); }
+  .criteria-dot.no { background: var(--red); box-shadow: 0 0 6px var(--red-glow); }
+
+  /* Causal Graph */
+  .causal-graph {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 2rem; overflow-x: auto;
+  }
+  .graph-svg { width: 100%; min-width: 900px; height: 520px; }
+  .graph-node {
+    cursor: pointer; transition: all 0.3s;
+  }
+  .graph-node:hover .node-rect { stroke: var(--accent); stroke-width: 2; }
+  .graph-node text { font-family: 'Noto Sans KR', sans-serif; }
+  .graph-edge { stroke: var(--border); stroke-width: 1.5; fill: none; marker-end: url(#arrowhead); }
+  .graph-edge.highlight { stroke: var(--accent); stroke-width: 2; }
+
+  /* Scenario */
+  .scenario-container {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 16px; overflow: hidden;
+  }
+  .scenario-header {
+    background: linear-gradient(135deg, var(--surface) 0%, var(--bg3) 100%);
+    padding: 2rem 2.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .scenario-header h3 { font-size: 1.3rem; font-weight: 700; }
+  .scenario-header p { color: var(--text3); font-size: 0.9rem; margin-top: 0.5rem; }
+  .scene-list { display: flex; flex-direction: column; }
+  .scene {
+    padding: 2rem 2.5rem; border-bottom: 1px solid rgba(255,255,255,0.05);
+    cursor: pointer; transition: all 0.3s;
+  }
+  .scene:hover { background: rgba(59,130,246,0.05); }
+  .scene.active { background: rgba(59,130,246,0.08); }
+  .scene-time {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.75rem; font-weight: 700; color: var(--accent);
+    letter-spacing: 1px; margin-bottom: 0.5rem;
+  }
+  .scene-location {
+    font-size: 0.75rem; color: var(--text3);
+    background: var(--surface); display: inline-block;
+    padding: 0.1rem 0.5rem; border-radius: 4px; margin-bottom: 0.75rem;
+  }
+  .scene-title { font-size: 1.05rem; font-weight: 600; margin-bottom: 0.5rem; }
+  .scene-body {
+    font-size: 0.9rem; color: var(--text2); line-height: 1.8;
+    max-height: 0; overflow: hidden; transition: max-height 0.4s ease;
+  }
+  .scene.active .scene-body { max-height: 500px; }
+  .scene-highlight {
+    background: rgba(59,130,246,0.1); border-left: 3px solid var(--accent);
+    padding: 0.75rem 1rem; border-radius: 0 8px 8px 0;
+    margin-top: 0.75rem; font-size: 0.85rem; color: var(--accent2);
+    font-style: italic;
+  }
+
+  /* Checklist */
+  .checklist-tabs {
+    display: flex; gap: 0.5rem; margin-bottom: 2rem; flex-wrap: wrap;
+  }
+  .checklist-tab {
+    padding: 0.6rem 1.2rem; border-radius: 8px;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--text2); cursor: pointer; font-size: 0.85rem;
+    font-weight: 500; transition: all 0.2s;
+  }
+  .checklist-tab:hover { border-color: var(--accent); color: var(--text); }
+  .checklist-tab.active {
+    background: var(--accent); border-color: var(--accent);
+    color: #fff;
+  }
+  .checklist-group { display: none; }
+  .checklist-group.active { display: block; }
+  .check-item {
+    display: flex; align-items: flex-start; gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; margin-bottom: 0.5rem;
+    cursor: pointer; transition: all 0.2s; user-select: none;
+  }
+  .check-item:hover { border-color: var(--accent); }
+  .check-item.checked { opacity: 0.5; }
+  .check-item.checked .check-text { text-decoration: line-through; }
+  .check-box {
+    width: 22px; height: 22px; border-radius: 6px;
+    border: 2px solid var(--border); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; margin-top: 2px;
+  }
+  .check-item.checked .check-box {
+    background: var(--green); border-color: var(--green);
+  }
+  .check-box svg { width: 14px; height: 14px; color: #fff; opacity: 0; transition: opacity 0.2s; }
+  .check-item.checked .check-box svg { opacity: 1; }
+  .check-text { font-size: 0.9rem; }
+  .check-progress {
+    display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;
+  }
+  .check-progress-bar {
+    flex: 1; height: 8px; background: var(--bg);
+    border-radius: 4px; overflow: hidden;
+  }
+  .check-progress-fill {
+    height: 100%; background: linear-gradient(90deg, var(--accent), var(--green));
+    border-radius: 4px; transition: width 0.4s;
+  }
+  .check-progress-text {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.85rem; font-weight: 700; color: var(--accent2);
+    min-width: 45px; text-align: right;
+  }
+
+  /* Recommendations */
+  .rec-tabs {
+    display: flex; gap: 0.5rem; margin-bottom: 2rem;
+  }
+  .rec-tab {
+    padding: 0.6rem 1.5rem; border-radius: 8px;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--text2); cursor: pointer; font-size: 0.85rem;
+    font-weight: 500; transition: all 0.2s;
+  }
+  .rec-tab:hover { border-color: var(--accent); color: var(--text); }
+  .rec-tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .rec-content { display: none; }
+  .rec-content.active { display: block; }
+  .rec-item {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem;
+  }
+  .rec-item h4 { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .rec-item p { font-size: 0.9rem; color: var(--text2); }
+  .rec-num {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.7rem; font-weight: 700; color: var(--accent);
+    letter-spacing: 1px; margin-bottom: 0.5rem;
+  }
+
+  /* Closing */
+  .closing {
+    text-align: center; padding: 6rem 2rem;
+    position: relative;
+  }
+  .closing-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(59,130,246,0.08), transparent);
+  }
+  .closing-content { position: relative; z-index: 1; }
+  .closing blockquote {
+    font-size: 1.3rem; font-weight: 500; line-height: 2;
+    max-width: 700px; margin: 0 auto 2rem;
+    color: var(--text);
+  }
+  .closing blockquote strong { color: var(--accent2); }
+  .closing .final-msg {
+    font-size: 1.1rem; color: var(--text2); max-width: 600px; margin: 0 auto;
+    line-height: 1.9;
+  }
+
+  /* Footer */
+  footer {
+    text-align: center; padding: 2rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.75rem; color: var(--text3);
+  }
+
+  /* Utility */
+  .fade-in {
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.6s, transform 0.6s;
+  }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  /* Mobile */
+  @media (max-width: 768px) {
+    section { padding: 3rem 1rem; }
+    .section-title { font-size: 1.6rem; }
+    .hero h1 { font-size: 2rem; }
+    .nav-links { display: none; }
+    .detail-inner { padding: 1.5rem; }
+    .detail-grid { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .tp-card { min-width: 280px; max-width: 280px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav id="mainNav">
+  <div class="nav-inner">
+    <div class="nav-logo">Future Fabric 3.0</div>
+    <div class="nav-links">
+      <a href="#baseline">기반선</a>
+      <a href="#timeline">타임라인</a>
+      <a href="#anxiety">불안 매핑</a>
+      <a href="#platform">플랫폼</a>
+      <a href="#graph">인과 그래프</a>
+      <a href="#scenario">시나리오</a>
+      <a href="#checklist">체크리스트</a>
+      <a href="#recommendations">제언</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-badge">FUTURE FABRIC 3.0 ENGINE</div>
+    <h1>한국 초등학교 교사의<br>10년 미래 설계</h1>
+    <p>인구 절벽, AI 혁명, 사회 구조 변화 — 세 가지 거대한 힘의 교차점에서 초등교사의 미래를 스트레스 테스트합니다.</p>
+    <div class="hero-meta">
+      <span><span class="dot" style="background:var(--accent)"></span> 대상: 초등학교 교사</span>
+      <span><span class="dot" style="background:var(--green)"></span> 국가: 대한민국</span>
+      <span><span class="dot" style="background:var(--purple)"></span> 관점: 혼합 (개인+조직+정책)</span>
+      <span><span class="dot" style="background:var(--yellow)"></span> 범위: 2026-2035</span>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 13l5 5 5-5M7 6l5 5 5-5"/></svg>
+  </div>
+</div>
+
+<!-- Baseline -->
+<section id="baseline">
+  <div class="fade-in">
+    <div class="section-label">Phase 1 — Job Baseline</div>
+    <div class="section-title">직업 기반선</div>
+    <div class="section-desc">2025년 현재 한국 초등학교 교사의 인력 구조, 핵심 업무, AI 대체 가능성을 분석합니다.</div>
+  </div>
+
+  <div class="stats-grid fade-in">
+    <div class="stat-card">
+      <div class="stat-value">~190K</div>
+      <div class="stat-label">전국 초등 교원 수</div>
+      <div class="stat-change down">&#9660; 감소 추세</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">77.2%</div>
+      <div class="stat-label">여성 교원 비율</div>
+      <div class="stat-change up">&#9650; 지속 증가</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">14.5명</div>
+      <div class="stat-label">교원 1인당 학생 수</div>
+      <div class="stat-change down">&#9660; 지속 감소</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">2,750</div>
+      <div class="stat-label">2027년 신규채용 전망</div>
+      <div class="stat-change down">&#9660; 3,561 → 2,750</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">32.8%</div>
+      <div class="stat-label">40대 교원 비율 (최다)</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">504건</div>
+      <div class="stat-label">2024 교권침해 접수</div>
+      <div class="stat-change down">&#9660; 3년 연속 500건+</div>
+    </div>
+  </div>
+
+  <h3 style="font-size:1.1rem; margin-bottom:1.5rem; font-weight:700;" class="fade-in">핵심 업무 원자 & AI 대체 가능성</h3>
+  <div class="task-grid fade-in">
+    <div class="task-atom"><span class="task-name">학생 평가 / 채점</span><span class="task-badge high">대체 높음</span></div>
+    <div class="task-atom"><span class="task-name">행정 업무 / 공문 처리</span><span class="task-badge high">대체 높음</span></div>
+    <div class="task-atom"><span class="task-name">기초 콘텐츠 제작</span><span class="task-badge high">대체 높음</span></div>
+    <div class="task-atom"><span class="task-name">수업 설계 / 교안 작성</span><span class="task-badge medium">부분 대체</span></div>
+    <div class="task-atom"><span class="task-name">학부모 소통 / 알림</span><span class="task-badge medium">부분 대체</span></div>
+    <div class="task-atom"><span class="task-name">돌봄 관리 / 늘봄학교</span><span class="task-badge medium">부분 대체</span></div>
+    <div class="task-atom"><span class="task-name">전문성 개발 / 연수</span><span class="task-badge medium">부분 대체</span></div>
+    <div class="task-atom"><span class="task-name">정서적 돌봄 / 위기 개입</span><span class="task-badge low">대체 어려움</span></div>
+    <div class="task-atom"><span class="task-name">생활지도 / 갈등 중재</span><span class="task-badge low">대체 어려움</span></div>
+    <div class="task-atom"><span class="task-name">창의적 수업 실행</span><span class="task-badge low">대체 어려움</span></div>
+  </div>
+</section>
+
+<!-- Timeline -->
+<section id="timeline">
+  <div class="fade-in">
+    <div class="section-label">Phase 3-4 — Yearly Turnpoints</div>
+    <div class="section-title">10년 턴포인트 타임라인</div>
+    <div class="section-desc">각 연도에서 가장 확률 높은 하나의 전환점을 선정했습니다. 카드를 클릭하면 상세 분석을 볼 수 있습니다.</div>
+  </div>
+
+  <div class="timeline-track fade-in" id="timelineTrack">
+    <!-- Cards generated by JS -->
+  </div>
+
+  <div class="detail-panel" id="detailPanel">
+    <div class="detail-inner" id="detailContent"></div>
+  </div>
+</section>
+
+<!-- Anxiety Map -->
+<section id="anxiety">
+  <div class="fade-in">
+    <div class="section-label">Human Anxiety Mapping</div>
+    <div class="section-title">7가지 인간 불안 매핑</div>
+    <div class="section-desc">각 턴포인트가 촉발하는 인간 불안과 완화 경로를 추적합니다.</div>
+  </div>
+  <div class="anxiety-grid fade-in" id="anxietyGrid">
+    <!-- Generated by JS -->
+  </div>
+</section>
+
+<!-- Platform Evolution -->
+<section id="platform">
+  <div class="fade-in">
+    <div class="section-label">Innovation Platform Theory</div>
+    <div class="section-title">혁신 플랫폼 진화 경로</div>
+    <div class="section-desc">AI 교육 생태계가 Innovation Platform으로 진화하는 과정을 5가지 핵심 기준으로 추적합니다.</div>
+  </div>
+  <div class="platform-timeline fade-in" id="platformTimeline">
+    <!-- Generated by JS -->
+  </div>
+</section>
+
+<!-- Causal Graph -->
+<section id="graph">
+  <div class="fade-in">
+    <div class="section-label">Graph-of-Thought</div>
+    <div class="section-title">인과 관계 그래프</div>
+    <div class="section-desc">10년간의 변화를 촉발하는 핵심 동인(driver)과 그들 간의 인과 관계를 시각화합니다.</div>
+  </div>
+  <div class="causal-graph fade-in">
+    <svg class="graph-svg" id="causalSvg" viewBox="0 0 1100 520">
+      <defs>
+        <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="#475569"/>
+        </marker>
+        <marker id="arrowhead-hl" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="#3b82f6"/>
+        </marker>
+      </defs>
+
+      <!-- Edges -->
+      <path class="graph-edge" d="M170,70 L300,70" />
+      <path class="graph-edge" d="M440,70 L570,50" />
+      <path class="graph-edge" d="M440,70 L570,110" />
+      <path class="graph-edge" d="M700,50 L830,70" />
+      <path class="graph-edge" d="M700,110 L830,70" />
+
+      <path class="graph-edge" d="M170,200 L300,200" />
+      <path class="graph-edge" d="M440,200 L570,180" />
+      <path class="graph-edge" d="M440,200 L570,250" />
+      <path class="graph-edge" d="M700,180 L830,200" />
+      <path class="graph-edge" d="M700,250 L830,320" />
+
+      <path class="graph-edge" d="M170,350 L300,350" />
+      <path class="graph-edge" d="M440,350 L570,350" />
+      <path class="graph-edge" d="M700,350 L830,320" />
+
+      <path class="graph-edge" d="M170,460 L300,460" />
+      <path class="graph-edge" d="M440,460 L570,350" />
+
+      <!-- Cross connections -->
+      <path class="graph-edge" d="M830,90 L830,200" style="stroke-dasharray: 4 4;" />
+      <path class="graph-edge" d="M570,270 L570,350" style="stroke-dasharray: 4 4;" />
+      <path class="graph-edge" d="M830,200 Q 950,260 830,320" style="stroke-dasharray: 4 4;" />
+
+      <!-- Convergence -->
+      <path class="graph-edge" d="M960,70 L1020,250" style="stroke:var(--accent);stroke-width:2;"/>
+      <path class="graph-edge" d="M960,200 L1020,250" style="stroke:var(--accent);stroke-width:2;"/>
+      <path class="graph-edge" d="M960,320 L1020,250" style="stroke:var(--accent);stroke-width:2;"/>
+
+      <!-- Row 1: 인구 -->
+      <g class="graph-node" transform="translate(40,45)">
+        <rect class="node-rect" width="130" height="50" rx="8" fill="#1e293b" stroke="#ef4444" stroke-width="1.5"/>
+        <text x="65" y="30" text-anchor="middle" fill="#f87171" font-size="13" font-weight="600">출생률 하락</text>
+      </g>
+      <g class="graph-node" transform="translate(300,45)">
+        <rect class="node-rect" width="140" height="50" rx="8" fill="#1e293b" stroke="#ef4444" stroke-width="1.5"/>
+        <text x="70" y="30" text-anchor="middle" fill="#f87171" font-size="13" font-weight="600">학생 수 감소</text>
+      </g>
+      <g class="graph-node" transform="translate(570,25)">
+        <rect class="node-rect" width="130" height="50" rx="8" fill="#1e293b" stroke="#f97316" stroke-width="1.5"/>
+        <text x="65" y="30" text-anchor="middle" fill="#fb923c" font-size="13" font-weight="600">학교 통폐합</text>
+      </g>
+      <g class="graph-node" transform="translate(570,85)">
+        <rect class="node-rect" width="130" height="50" rx="8" fill="#1e293b" stroke="#f97316" stroke-width="1.5"/>
+        <text x="65" y="30" text-anchor="middle" fill="#fb923c" font-size="13" font-weight="600">유휴 공간 증가</text>
+      </g>
+      <g class="graph-node" transform="translate(830,45)">
+        <rect class="node-rect" width="130" height="50" rx="8" fill="#1e293b" stroke="#f59e0b" stroke-width="1.5"/>
+        <text x="65" y="30" text-anchor="middle" fill="#fbbf24" font-size="13" font-weight="600">공간 재구조화</text>
+      </g>
+
+      <!-- Row 2: AI -->
+      <g class="graph-node" transform="translate(40,175)">
+        <rect class="node-rect" width="130" height="50" rx="8" fill="#1e293b" stroke="#3b82f6" stroke-width="1.5"/>
+        <text x="65" y="30" text-anchor="middle" fill="#60a5fa" font-size="13" font-weight="600">AI 기술 발전</text>
+      </g>
+      <g class="graph-node" transform="translate(300,175)">
+        <rect class="node-rect" width="140" height="50" rx="8" fill="#1e293b" stroke="#3b82f6" stroke-width="1.5"/>
+        <text x="70" y="30" text-anchor="middle" fill="#60a5fa" font-size="13" font-weight="600">AI 디지털교과서</text>
+      </g>
+      <g class="graph-node" transform="translate(570,155)">
+        <rect class="node-rect" width="130" height="50" rx="8" fill="#1e293b" stroke="#8b5cf6" stroke-width="1.5"/>
+        <text x="65" y="30" text-anchor="middle" fill="#a78bfa" font-size="13" font-weight="600">AI 보조교사</text>
+      </g>
+      <g class="graph-node" transform="translate(570,225)">
+        <rect class="node-rect" width="130" height="50" rx="8" fill="#1e293b" stroke="#8b5cf6" stroke-width="1.5"/>
+        <text x="65" y="30" text-anchor="middle" fill="#a78bfa" font-size="13" font-weight="600">학습데이터 축적</text>
+      </g>
+      <g class="graph-node" transform="translate(830,175)">
+        <rect class="node-rect" width="130" height="50" rx="8" fill="#1e293b" stroke="#ec4899" stroke-width="1.5"/>
+        <text x="65" y="30" text-anchor="middle" fill="#f472b6" font-size="13" font-weight="600">교사 역할 변화</text>
+      </g>
+
+      <!-- Row 3: 사회 -->
+      <g class="graph-node" transform="translate(40,325)">
+        <rect class="node-rect" width="130" height="50" rx="8" fill="#1e293b" stroke="#10b981" stroke-width="1.5"/>
+        <text x="65" y="30" text-anchor="middle" fill="#34d399" font-size="13" font-weight="600">사회구조 변화</text>
+      </g>
+      <g class="graph-node" transform="translate(300,325)">
+        <rect class="node-rect" width="140" height="50" rx="8" fill="#1e293b" stroke="#10b981" stroke-width="1.5"/>
+        <text x="70" y="30" text-anchor="middle" fill="#34d399" font-size="13" font-weight="600">돌봄 수요 증가</text>
+      </g>
+      <g class="graph-node" transform="translate(570,325)">
+        <rect class="node-rect" width="130" height="50" rx="8" fill="#1e293b" stroke="#06b6d4" stroke-width="1.5"/>
+        <text x="65" y="30" text-anchor="middle" fill="#22d3ee" font-size="13" font-weight="600">학교 기능 확대</text>
+      </g>
+      <g class="graph-node" transform="translate(830,295)">
+        <rect class="node-rect" width="130" height="50" rx="8" fill="#1e293b" stroke="#ec4899" stroke-width="1.5"/>
+        <text x="65" y="30" text-anchor="middle" fill="#f472b6" font-size="13" font-weight="600">정체성 재정의</text>
+      </g>
+
+      <!-- Row 4: 위기 -->
+      <g class="graph-node" transform="translate(40,435)">
+        <rect class="node-rect" width="130" height="50" rx="8" fill="#1e293b" stroke="#06b6d4" stroke-width="1.5"/>
+        <text x="65" y="30" text-anchor="middle" fill="#22d3ee" font-size="13" font-weight="600">다문화·정서위기</text>
+      </g>
+      <g class="graph-node" transform="translate(300,435)">
+        <rect class="node-rect" width="140" height="50" rx="8" fill="#1e293b" stroke="#06b6d4" stroke-width="1.5"/>
+        <text x="70" y="30" text-anchor="middle" fill="#22d3ee" font-size="13" font-weight="600">SEL 수요 증가</text>
+      </g>
+
+      <!-- Final convergence node -->
+      <g class="graph-node" transform="translate(990,220)">
+        <rect class="node-rect" width="100" height="60" rx="12" fill="var(--accent)" stroke="var(--accent2)" stroke-width="2"/>
+        <text x="50" y="25" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">인간 발달</text>
+        <text x="50" y="45" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">전문가</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<!-- Scenario -->
+<section id="scenario">
+  <div class="fade-in">
+    <div class="section-label">Phase 5 — Scenario</div>
+    <div class="section-title">시나리오: 김선생님의 2035년 월요일</div>
+    <div class="section-desc">10년 후 초등교사의 하루를 생생하게 그려봅니다. 각 장면을 클릭하세요.</div>
+  </div>
+  <div class="scenario-container fade-in">
+    <div class="scenario-header">
+      <h3>김유진 교사 (35세) | 서울 OO초등학교 3학년 담임</h3>
+      <p>AI 보조교사 '나래'와 함께하는 2035년의 평범한 월요일</p>
+    </div>
+    <div class="scene-list" id="sceneList">
+      <!-- Generated by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- Checklist -->
+<section id="checklist">
+  <div class="fade-in">
+    <div class="section-label">Preparation Paths</div>
+    <div class="section-title">개인 준비 체크리스트</div>
+    <div class="section-desc">현직 초등교사를 위한 단계별 준비 항목입니다. 체크하며 진행 상황을 추적하세요.</div>
+  </div>
+  <div class="fade-in">
+    <div class="check-progress">
+      <div class="check-progress-bar"><div class="check-progress-fill" id="progressFill" style="width:0%"></div></div>
+      <div class="check-progress-text" id="progressText">0%</div>
+    </div>
+    <div class="checklist-tabs" id="checklistTabs">
+      <div class="checklist-tab active" data-tab="immediate">즉시 시작 (2026-2027)</div>
+      <div class="checklist-tab" data-tab="mid">중기 준비 (2028-2030)</div>
+      <div class="checklist-tab" data-tab="long">장기 비전 (2031-2035)</div>
+    </div>
+    <div class="checklist-group active" id="tab-immediate"></div>
+    <div class="checklist-group" id="tab-mid"></div>
+    <div class="checklist-group" id="tab-long"></div>
+  </div>
+</section>
+
+<!-- Recommendations -->
+<section id="recommendations">
+  <div class="fade-in">
+    <div class="section-label">Strategic Recommendations</div>
+    <div class="section-title">전략적 제언</div>
+    <div class="section-desc">개인, 조직, 정책 관점의 구체적 제언입니다.</div>
+  </div>
+  <div class="fade-in">
+    <div class="rec-tabs" id="recTabs">
+      <div class="rec-tab active" data-tab="individual">개인 근로자</div>
+      <div class="rec-tab" data-tab="org">조직 / 고용주</div>
+      <div class="rec-tab" data-tab="policy">정책 / 교육 시스템</div>
+    </div>
+    <div class="rec-content active" id="rec-individual"></div>
+    <div class="rec-content" id="rec-org"></div>
+    <div class="rec-content" id="rec-policy"></div>
+  </div>
+</section>
+
+<!-- Closing -->
+<div class="closing">
+  <div class="closing-bg"></div>
+  <div class="closing-content fade-in">
+    <blockquote>
+      <strong>"어떤 미래가 실현되는가는 선택에 달려 있습니다."</strong><br><br>
+      일부 턴포인트는 비가역적입니다.<br>
+      그러나 나머지는 여전히 열려 있으며 —<br>
+      <strong>바로 여기가 인간의 주체성(agency)이 중요한 지점입니다.</strong>
+    </blockquote>
+    <div class="final-msg">
+      초등학교 교사는 사라지지 않습니다. <strong>변화합니다.</strong><br>
+      그리고 그 변화의 방향은, AI가 아니라 <strong>우리가 결정합니다.</strong>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>Future Fabric 3.0 — Human-Centered Job Future Design Engine | Generated 2026-02-08</p>
+  <p style="margin-top:0.5rem;">분석 기반: OECD 교육 통계, 한국 교육부 정책 자료, Innovation Platform Theory, 미래학 방법론</p>
+</footer>
+
+<script>
+// ===== DATA =====
+const turnpoints = [
+  {
+    id: 'y1', year: 'Y1', actual: 2026,
+    title: 'AI 디지털교과서 전면 확대',
+    subtitle: '"도구의 침투"',
+    reversibility: 'conditional',
+    anxieties: ['A2','A7','A4'],
+    ipStatus: 'Sub-factor',
+    phenomenon: 'AI 디지털교과서가 초등 5·6학년, 중학교 2학년까지 확대 적용. 수학 AI 튜터링, 영어 음성인식 기반 말하기 연습이 교실 일상이 됨.',
+    directDrivers: ['교육부 AI 디지털교과서 로드맵', '2025년 1차 도입 데이터 피드백', '76종 검정 디지털교과서 투입'],
+    indirectDrivers: ['에듀테크 B2G 시장 확대', '학부모 AI 교육 요구', 'OECD 교사 역량 프레임워크'],
+    interaction: '교육부 정책 → 에듀테크 기업 투자 → 교사 연수 수요 폭증 → 디지털 역량 격차 심화',
+    survive: 'AI 디지털교과서 활용 역량 인증 취득, 수업 설계에 AI 도구 통합 실습',
+    transition: '에듀테크 기업 교육 컨설턴트, 교사 연수 강사 등 인접 직무 탐색',
+    uncertainty: 'AI 디지털교과서의 실제 학습 효과가 기대에 미치지 못할 경우 정책 재검토 가능'
+  },
+  {
+    id: 'y2', year: 'Y2', actual: 2027,
+    title: '학령인구 절벽의 체감',
+    subtitle: '"빈 교실의 시작"',
+    reversibility: 'irreversible',
+    anxieties: ['A1','A6','A7'],
+    ipStatus: 'N/A',
+    phenomenon: '2020년 출생아(27.2만명)가 초등학교 입학. 초등 1학년이 25만명대로 진입. 농산어촌 통폐합 가속, 교사 신규 채용 2,600명대로 축소.',
+    directDrivers: ['합계출산율 0.72(2020년)', '교원 정원 관리 계획', '지방 인구 소멸 가속'],
+    indirectDrivers: ['부동산 시장 변화', '지방교육재정 축소', '교대 지원자 감소'],
+    interaction: '출생률 하락 → 학급 수 감소 → 신규 수요 감소 → 교대 지원 하락 → 우수 인재 이탈 (악순환)',
+    survive: '복식학급 운영, 복수 교과 지도 역량 강화, 소규모 학교 특화 전문성',
+    transition: '다문화 교육, 특수교육, 상담 등 수요 증가 분야 전문성 확장',
+    uncertainty: '정부의 적극적 이민 정책 또는 예상치 못한 출산율 반등 (극히 낮음)'
+  },
+  {
+    id: 'y3', year: 'Y3', actual: 2028,
+    title: '교원양성체계 대전환',
+    subtitle: '"교대의 변신"',
+    reversibility: 'conditional',
+    anxieties: ['A1','A6','A2'],
+    ipStatus: 'Adjacent',
+    phenomenon: '교대-종합대 통합 본격 시행. 1교사 다과목 지도 도입, 교육실습 학기제 전면 시행. AI 리터러시·데이터 기반 교육이 필수 과목으로 편입.',
+    directDrivers: ['6주기 교원양성기관 역량진단', '교대 정원 감축 로드맵', '다과목 지도 허용 정책'],
+    indirectDrivers: ['핀란드·싱가포르 벤치마킹', '교사 전문성 기대 변화', 'AI 역량 국제 표준화'],
+    interaction: '학생 수 감소 → 교대 정원 감축 → 양성 혁신 기회 → 새 커리큘럼 → 현직-신규 역량 격차',
+    survive: '대학원 과정 또는 전문 자격 취득 (상담, 특수교육, AI교육 등)',
+    transition: '교육 정책 연구, 교육과정 개발, 에듀테크 스타트업 진출',
+    uncertainty: '교대 동문 네트워크의 정치적 저항, 통합 거버넌스 갈등'
+  },
+  {
+    id: 'y4', year: 'Y4', actual: 2029,
+    title: 'AI 보조교사 교실 진입',
+    subtitle: '"인간+AI 팀티칭의 원년"',
+    reversibility: 'conditional',
+    anxieties: ['A1','A2','A5','A3'],
+    ipStatus: 'Platform (초기)',
+    phenomenon: '교사 1인 + AI 보조교사의 팀티칭 모델 시범 시행. AI가 형성평가·숙제 피드백·기초학력 보정 담당, 교사는 프로젝트·SEL·창의활동 집중.',
+    directDrivers: ['멀티모달 AI 기술 성숙', '3년간 AI 학습 데이터 축적', '교사 업무 경감 정책'],
+    indirectDrivers: ['글로벌 AI 튜터 시장 확대', '에듀테크 기술력 향상', '개별 맞춤 교육 요구 증대'],
+    interaction: 'AI 데이터 축적 → 개인화 정밀도 향상 → 역할 재정의 압력 → 연수 체계 전면 개편',
+    survive: 'AI 프롬프트 엔지니어링, 학습 데이터 분석, AI-인간 협업 수업 설계 전문성',
+    transition: 'AI 교육 시스템 설계자, 학습 데이터 분석가, 교육 UX 디자이너',
+    uncertainty: 'AI 환각(hallucination) 문제로 초등교육 안전성 논란, 학부모 반발'
+  },
+  {
+    id: 'y5', year: 'Y5', actual: 2030,
+    title: '학교 기능 재정의',
+    subtitle: '"교육+돌봄+사회화 허브"',
+    reversibility: 'irreversible',
+    anxieties: ['A6','A7','A1'],
+    ipStatus: 'Sub-factor',
+    phenomenon: 'AI가 지식 전달을 상당 부분 담당. 교사의 핵심 가치가 사회정서학습(SEL), 시민성 교육, 협업·소통 촉진으로 이동.',
+    directDrivers: ['맞벌이 가구 증가로 돌봄 수요 확대', 'AI 지식 전달 효율 향상', 'OECD Learning Compass 2030'],
+    indirectDrivers: ['알파세대 디지털 네이티브 특성', '아동 정신건강 위기 심화', '다문화 학생 비율 증가'],
+    interaction: 'AI 지식 전달 향상 → 교사 지식 전달 축소 → 사회정서 역할 확대 → 평가 기준 개편',
+    survive: 'SEL 전문 자격, 상담심리 역량 강화, 다문화 교육 전문성',
+    transition: '아동상담사, 지역사회 교육 코디네이터, 교육복지사',
+    uncertainty: '교사노조의 "교사 ≠ 돌봄 노동자" 저항, 전문직 정체성 갈등'
+  },
+  {
+    id: 'y6', year: 'Y6', actual: 2031,
+    title: '교사 평가 체계 혁신',
+    subtitle: '"데이터가 증명하는 교사"',
+    reversibility: 'conditional',
+    anxieties: ['A3','A2','A7'],
+    ipStatus: 'Sub-factor',
+    phenomenon: 'AI 학습분석이 학생 성과·정서·참여도를 실시간 측정. 데이터 기반 교사 성과 평가 시스템 도입. 호봉제 논의 본격화.',
+    directDrivers: ['5년간 AI 학습 데이터 분석 성숙', '교원 성과급 개편 논의', '글로벌 교육 평가 혁신'],
+    indirectDrivers: ['공무원 호봉제 피로', '교육 투자 효율성 요구', '에듀테크 교사 대시보드 출시'],
+    interaction: 'AI 학습분석 축적 → 교사 성과 가시화 → 평가 개편 압력 → 교사 반발 vs 사회 요구',
+    survive: '학습분석 리터러시, 데이터 기반 수업 개선, 포트폴리오 관리',
+    transition: '교육 데이터 분석가, 학습분석 컨설턴트, 교사 코칭 전문가',
+    uncertainty: '교원노조의 강력한 저항으로 도입 지연 또는 무력화 가능성'
+  },
+  {
+    id: 'y7', year: 'Y7', actual: 2032,
+    title: '초개인화 교육의 보편화',
+    subtitle: '"30명 30교육과정"',
+    reversibility: 'irreversible',
+    anxieties: ['A6','A5','A7'],
+    ipStatus: 'Platform (성숙)',
+    phenomenon: 'AI가 학생별 완전 맞춤형 학습 경로 설계·실행. 교사는 "학습 경험 큐레이터"이자 "학습 여정 동반자"로 전환.',
+    directDrivers: ['AGI 근접 AI 기술', '7년간 디지털교과서 운영 데이터', 'MZ세대 학부모의 개별화 요구'],
+    indirectDrivers: ['교육 불평등 인식 심화', '사교육-공교육 경쟁', '글로벌 초개인화 모델 확산'],
+    interaction: 'AI 개인화 향상 → 학생별 맞춤 경로 → 표준 교육과정 약화 → 교사 자율성+책임 확대',
+    survive: '학습 설계(Instructional Design) 전문성, 개별화 교육 코칭 역량',
+    transition: '학습 경험 설계자(LXD), 교육 콘텐츠 큐레이터, AI 교육 플랫폼 PM',
+    uncertainty: '초개인화의 부작용 (공동체 의식 약화, 디지털 격차 심화)'
+  },
+  {
+    id: 'y8', year: 'Y8', actual: 2033,
+    title: '교사 정신건강 시스템 제도화',
+    subtitle: '"돌보는 자를 돌보다"',
+    reversibility: 'conditional',
+    anxieties: ['A7','A6','A1'],
+    ipStatus: 'N/A',
+    phenomenon: 'Y1~Y7의 급격한 변화로 교사 번아웃 심화. 교사 웰빙 전담 시스템 법제화. 교사 1인당 15명 이하 법안 통과.',
+    directDrivers: ['교사 이직률 증가', '2020년대 정신건강 연구 축적', '일본 교사 부족 경고 효과'],
+    indirectDrivers: ['MZ세대 교사 워라밸', '교권 침해 지속', 'OECD 교사 웰빙 지표'],
+    interaction: '변화 스트레스 → 번아웃 → 우수 인재 기피 → 사회적 위기 인식 → 제도적 대응',
+    survive: '마음챙김·자기돌봄, 동료 지원 네트워크, 교사 리더십 개발',
+    transition: '교사 웰빙 컨설턴트, 교육조직 문화 전문가, 교직 코칭 전문가',
+    uncertainty: '교육 재정 축소로 유명무실해질 가능성'
+  },
+  {
+    id: 'y9', year: 'Y9', actual: 2034,
+    title: '학교 공간의 물리적 재구조화',
+    subtitle: '"교실 없는 학교"',
+    reversibility: 'irreversible',
+    anxieties: ['A6','A7','A3'],
+    ipStatus: 'Adjacent',
+    phenomenon: '전통적 교실 구조가 학습 스튜디오·메이커스페이스·디지털 랩 등으로 재구조화. 분산형 학교 모델 시범 운영.',
+    directDrivers: ['학생 수 감소로 유휴 교실 증가', 'XR/메타버스 기술 성숙', '학교 건물 노후화'],
+    indirectDrivers: ['핀란드·덴마크 혁신 학교 모델', '지역 소멸 위기', '기후변화 대응'],
+    interaction: '유휴 공간 + 기술 성숙 → 공간 재설계 → 교수법 혁신 → 교사 역할 확장',
+    survive: '학습 공간 설계 역량, XR/메타버스 활용 능력, 야외·체험 학습 전문성',
+    transition: '교육 공간 컨설턴트, 스마트 스쿨 설계자, 지역 교육 생태계 코디네이터',
+    uncertainty: '교육 예산 제약으로 일부 지역에 국한될 가능성'
+  },
+  {
+    id: 'y10', year: 'Y10', actual: 2035,
+    title: '인간 발달 전문가로의 정체성 확립',
+    subtitle: '"Human Development Professional"',
+    reversibility: 'irreversible',
+    anxieties: ['A6','A1','A5'],
+    ipStatus: 'Platform',
+    phenomenon: '교사 정체성이 "지식 전달자"에서 "인간 발달 전문가"로 공식 재정의. 인지·정서·사회적·신체적 발달을 통합 설계하는 전문가로 자리매김.',
+    directDrivers: ['Y1~Y9 누적 변화의 수렴', 'AI 한계(감정·윤리·관계) 명확화', '교원양성 혁신 1세대 진입'],
+    indirectDrivers: ['아동 정신건강 위기 대응', '디지털 세대의 인간적 연결 갈망', '교직 위상 재정립 운동'],
+    interaction: 'AI 지식 전달 탁월성 → 교사 비교우위 명확화 → 전문직 재구축 → 우수 인재 재유입',
+    survive: '발달심리학, 긍정심리학, 회복탄력성 코칭, 아동 권리 옹호 전문성',
+    transition: '아동발달 전문가, 교육 치료사, 글로벌 교육 컨설턴트',
+    uncertainty: 'AGI가 감정·관계 영역까지 침투할 가능성 (현재로서는 낮음)'
+  }
+];
+
+const anxieties = [
+  { id: 'A1', name: '일자리 상실 / 감소', color: '#ef4444', peaks: ['Y2','Y4'], resolve: 'Y10',
+    bar: 75, mitigation: '인간 발달 전문가로의 재포지셔닝이 불가대체성 확보' },
+  { id: 'A2', name: '강제 AI 사용 & 성과 평가 압력', color: '#f97316', peaks: ['Y1','Y4','Y6'], resolve: 'Y8',
+    bar: 80, mitigation: '교사 주도의 AI 활용 문화 정착, 평가 체계 합리화' },
+  { id: 'A3', name: '감시 · 모니터링 확대', color: '#f59e0b', peaks: ['Y4','Y6','Y9'], resolve: null,
+    bar: 65, mitigation: '데이터 거버넌스 법제화, 교사 데이터 권리 보장' },
+  { id: 'A4', name: '데이터 유출 · IP · 준수 위험', color: '#eab308', peaks: ['Y1','Y4'], resolve: 'Y6',
+    bar: 50, mitigation: '교육 데이터 보호법 제정, 개인정보 관리 시스템 고도화' },
+  { id: 'A5', name: '저품질 · 비인간적 콘텐츠 피로', color: '#8b5cf6', peaks: ['Y4','Y7'], resolve: 'Y10',
+    bar: 60, mitigation: '인간 교사의 "진짜 교육" 가치가 사회적으로 재확인' },
+  { id: 'A6', name: '창의성 · 인간 정체성 침식', color: '#ec4899', peaks: ['Y2','Y5','Y7'], resolve: 'Y10',
+    bar: 90, mitigation: '새로운 전문직 정체성 (인간 발달 전문가) 확립' },
+  { id: 'A7', name: '속도 · 번아웃 · 무력감', color: '#06b6d4', peaks: ['Y1','Y5','Y7'], resolve: 'Y8',
+    bar: 85, mitigation: '교사 웰빙 시스템 법제화, 업무 재설계' }
+];
+
+const platformPhases = [
+  {
+    phase: 'Y1–Y3 (2026-2028)', status: 'Sub-factor → Adjacent', color: '#f59e0b',
+    desc: 'AI 디지털교과서가 보조 도구로 작동. 아직 완전한 생태계 미형성.',
+    criteria: [
+      { name: '다면 시장', status: 'partial' },
+      { name: '네트워크 효과', status: 'no' },
+      { name: '생태계 오케스트레이션', status: 'partial' },
+      { name: '가치 공동창출', status: 'no' },
+      { name: '확장성', status: 'yes' }
+    ]
+  },
+  {
+    phase: 'Y4–Y6 (2029-2031)', status: 'Platform (초기)', color: '#3b82f6',
+    desc: 'AI 보조교사와 학습분석이 다면시장 + 데이터 네트워크 효과를 발현.',
+    criteria: [
+      { name: '다면 시장', status: 'yes' },
+      { name: '네트워크 효과', status: 'yes' },
+      { name: '생태계 오케스트레이션', status: 'yes' },
+      { name: '가치 공동창출', status: 'partial' },
+      { name: '확장성', status: 'yes' }
+    ]
+  },
+  {
+    phase: 'Y7–Y10 (2032-2035)', status: 'Platform (성숙)', color: '#10b981',
+    desc: '교육 AI 생태계가 완전한 Innovation Platform으로 작동. 교사-AI 협업 표준화.',
+    criteria: [
+      { name: '다면 시장', status: 'yes' },
+      { name: '네트워크 효과', status: 'yes' },
+      { name: '생태계 오케스트레이션', status: 'yes' },
+      { name: '가치 공동창출', status: 'yes' },
+      { name: '확장성', status: 'yes' }
+    ]
+  }
+];
+
+const scenes = [
+  {
+    time: '07:30', location: '자택',
+    title: 'AI 어시스턴트의 아침 브리핑',
+    body: '김유진 교사(35세)가 AI 어시스턴트 \'나래\'의 브리핑을 확인한다. "오늘 3반 민서가 지난주부터 수면 패턴이 불규칙해요. 수학에서 분수 개념 이해도가 72%에서 58%로 하락했고, 사회정서 지표도 주의 구간입니다." 김 교사는 민서와 1:1 대화 시간을 오전 쉬는 시간에 잡는다.',
+    highlight: 'AI가 데이터를 분석하고, 인간 교사가 관계적 판단을 내린다.'
+  },
+  {
+    time: '09:00', location: '학습 스튜디오',
+    title: 'AI와 함께하는 수학 수업',
+    body: '전통적 교실이 아닌 이동식 가구와 디지털 벽면으로 구성된 학습 스튜디오. 28명의 학생이 각자 AI 튜터와 함께 수학을 학습 중. 김 교사는 교실을 돌아다니며 표정, 자세, 상호작용을 관찰한다. AI가 "지호가 15분째 같은 문제에 머물고 있어요"라고 알려주면, 김 교사가 다가가 함께 블록을 만져보며 설명한다.',
+    highlight: 'AI는 패턴을 감지하고, 교사는 인간적 개입으로 학습을 돕는다.'
+  },
+  {
+    time: '10:30', location: '나무 그늘 아래',
+    title: '민서와의 대화 — AI가 할 수 없는 순간',
+    body: '민서와 나무 그늘 아래에서 대화. "요즘 잠이 잘 안 와?" 민서가 부모님 이혼 이야기를 꺼낸다. 김 교사는 전문상담교사 연계 여부를 판단하면서 지금 이 순간 민서에게 안전한 어른이 되어준다.',
+    highlight: 'AI는 이 대화를 하지 못한다. 이것이 교사의 불가대체적 가치다.'
+  },
+  {
+    time: '13:00', location: '메이커스페이스',
+    title: '프로젝트 학습 — 갈등과 사고를 촉진',
+    body: '"우리 동네 문제를 해결하자" 프로젝트 학습. 학생들이 3~4명씩 팀을 이루어 지역 환경 문제를 조사하고 해결책을 설계한다. 김 교사는 팀 간 갈등을 중재하고, 비판적 사고를 촉진하는 질문을 던진다. "정말 그 방법이 최선일까? 다른 관점에서 생각해 볼 사람?"',
+    highlight: '교사는 지식을 전달하는 대신, 사고와 협업을 촉진하는 퍼실리테이터다.'
+  },
+  {
+    time: '15:30', location: '교사 협력실',
+    title: '데이터 기반 동학년 협의회',
+    body: '동학년 교사 4명이 모여 이번 주 학습 데이터를 리뷰. AI 대시보드가 학급별 학습 성과, 정서 지표, 사회성 발달 추이를 시각화. "우리 반 수학 기초 그룹에 새로운 접근이 필요해요"라고 김 교사가 제안하면, 동료가 자신의 수업 사례를 공유한다.',
+    highlight: '데이터가 대화의 시작점이 되고, 교사의 전문적 판단이 결론을 이끈다.'
+  },
+  {
+    time: '17:00', location: '퇴근',
+    title: '정시 퇴근 — 재설계된 교사의 일상',
+    body: '김 교사는 정시에 퇴근한다. 행정 업무는 AI가 처리했고, 학부모 소통은 학교 공식 채널을 통해 자동화되었다. 내일 있을 학부모 상담 준비를 AI에게 맡기고, 자기계발 시간으로 \'아동 트라우마 대응 과정\' 온라인 세미나에 접속한다.',
+    highlight: 'AI가 반복 업무를 맡으니, 교사는 전문성 성장에 시간을 투자할 수 있다.'
+  }
+];
+
+const checklistData = {
+  immediate: [
+    'AI 디지털교과서 활용 역량 인증 취득',
+    '데이터 리터러시 기초 과정 이수',
+    '사회정서학습(SEL) 관련 직무연수 참여',
+    '개인 교육 포트폴리오 구축 시작',
+    'AI 프롬프트 활용 기초 실습',
+    '교사 학습공동체(PLC) 정기 참여',
+    '디지털 교수법 워크숍 참가',
+    '교권 보호 관련 법률 지식 업데이트'
+  ],
+  mid: [
+    '복수 교과 지도 역량 확보 (다과목 자격)',
+    '학습분석 데이터 활용 역량 강화',
+    '상담심리 또는 특수교육 전문 자격 검토',
+    '교사 학습공동체(PLC) 활동 심화',
+    'AI-인간 협업 수업 모델 직접 설계·실행',
+    '다문화 교육 전문 과정 이수',
+    '교육 연구 논문 또는 실천 사례 발표',
+    '에듀테크 도구 비교·평가 역량 개발'
+  ],
+  long: [
+    '"인간 발달 전문가"로서의 전문성 정체성 확립',
+    '대학원 또는 전문 과정 심화 (발달심리, 긍정심리 등)',
+    '교육 혁신 리더십 역량 개발',
+    'AI-인간 협업 수업 모델 개발 및 공유',
+    '교사 웰빙 멘토링 프로그램 리더 역할',
+    '글로벌 교육 네트워크 참여',
+    '차세대 교사 양성 과정 자문·참여',
+    '개인 브랜딩을 통한 교육 영향력 확장'
+  ]
+};
+
+const recommendations = {
+  individual: [
+    { title: 'AI를 동맹으로 삼으세요', desc: '위협이 아닌 도구로 접근. AI가 반복 업무를 맡으면 교사만의 가치에 집중할 시간이 생깁니다. 거부가 아니라 주도적 활용이 생존 전략입니다.' },
+    { title: '비교우위 영역을 의식적으로 강화하세요', desc: '공감, 갈등 해결, 윤리적 판단, 창의적 영감 — AI가 대체할 수 없는 영역에 투자하세요. 이것이 10년 후 교사의 불가대체성의 원천입니다.' },
+    { title: '데이터 리터러시는 선택이 아닌 필수입니다', desc: '학습분석 데이터를 읽고, 해석하고, 수업 개선에 활용하는 능력이 향후 교사 평가의 핵심 지표가 됩니다.' },
+    { title: '자기 돌봄을 전문성으로 인식하세요', desc: '10년간의 급격한 변화 속에서 번아웃은 가장 현실적인 위험입니다. 마음챙김, 동료 지원, 경계 설정을 실천하세요.' }
+  ],
+  org: [
+    { title: '교사 재교육에 투자하세요', desc: 'AI 도구 활용만이 아닌, 사회정서학습·상담·다문화 교육 역량 중심의 체계적 재교육 프로그램을 설계하세요.' },
+    { title: '업무를 재설계하세요', desc: 'AI가 대체 가능한 행정·평가 업무를 적극 자동화하여 교사의 핵심 역할 집중을 지원하세요.' },
+    { title: '유연한 학교 조직을 설계하세요', desc: '소규모 학교 운영, 교사 팀티칭, 지역사회 연계 모델을 실험하세요. 학생 수 감소는 교실 환경 혁신의 기회입니다.' },
+    { title: '교사 웰빙 인프라를 구축하세요', desc: '심리상담, 안식 제도, 동료 지원 체계를 선제적으로 구축하세요. 일본의 교사 부족 사태를 반면교사로 삼으세요.' }
+  ],
+  policy: [
+    { title: '교원양성 혁신을 가속하세요', desc: 'AI 리터러시 + 인간 발달 전문성의 균형 잡힌 커리큘럼으로 양성 과정을 혁신하세요. 현직 교사 재교육도 동시 추진이 필요합니다.' },
+    { title: '점진적 정원 조정을 추진하세요', desc: '급격한 감축이 아닌, 질적 전환을 동반하는 단계적 조정. 학급당 학생 수 감소를 교육 질 향상의 기회로 전환하세요.' },
+    { title: '교사 데이터 권리를 보장하세요', desc: '학습분석 데이터의 교사 평가 활용에 대한 명확한 법적 프레임워크를 수립하세요. 감시가 아닌 지원을 위한 데이터여야 합니다.' },
+    { title: '학교-지역사회 통합 모델을 추진하세요', desc: '학령인구 감소를 위기가 아닌 기회로. 학교가 지역사회의 교육·돌봄·문화 허브가 되는 모델을 설계하세요.' },
+    { title: '국제 벤치마킹을 강화하세요', desc: '핀란드·싱가포르·에스토니아의 AI 시대 교사 정책을 적극 참조하고, 한국형 모델로 발전시키세요.' }
+  ]
+};
+
+const anxietyColors = {
+  'A1': '#ef4444', 'A2': '#f97316', 'A3': '#f59e0b', 'A4': '#eab308',
+  'A5': '#8b5cf6', 'A6': '#ec4899', 'A7': '#06b6d4'
+};
+
+// ===== RENDER FUNCTIONS =====
+
+function renderTimeline() {
+  const track = document.getElementById('timelineTrack');
+  track.innerHTML = turnpoints.map((tp, i) => `
+    <div class="tp-card" data-index="${i}" onclick="openDetail(${i})">
+      <div class="tp-year">${tp.year} <span class="tp-actual-year">— ${tp.actual}</span></div>
+      <div class="tp-title">${tp.title}</div>
+      <div class="tp-badges">
+        <span class="tp-rev-badge ${tp.reversibility}">${tp.reversibility === 'irreversible' ? '비가역' : '조건부 가역'}</span>
+        <span class="tp-rev-badge" style="background:rgba(59,130,246,0.15);color:var(--accent2);">${tp.ipStatus}</span>
+      </div>
+      <div class="tp-anxiety-dots">
+        ${tp.anxieties.map(a => `<span class="anxiety-dot" style="background:${anxietyColors[a]}20;color:${anxietyColors[a]}">${a}</span>`).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function openDetail(index) {
+  const tp = turnpoints[index];
+  const panel = document.getElementById('detailPanel');
+  const content = document.getElementById('detailContent');
+
+  document.querySelectorAll('.tp-card').forEach((c,i) => c.classList.toggle('active', i===index));
+
+  content.innerHTML = `
+    <div class="detail-header">
+      <div>
+        <div class="detail-year">${tp.actual}</div>
+        <div class="detail-title">${tp.title} — ${tp.subtitle}</div>
+      </div>
+      <button class="detail-close" onclick="closeDetail()">&times;</button>
+    </div>
+    <p style="color:var(--text2);margin-bottom:2rem;font-size:0.95rem;line-height:1.8;">${tp.phenomenon}</p>
+    <div class="detail-grid">
+      <div class="detail-block">
+        <h4>직접 동인</h4>
+        <div>${tp.directDrivers.map(d => `<span class="driver-tag">${d}</span>`).join('')}</div>
+      </div>
+      <div class="detail-block">
+        <h4>간접 동인</h4>
+        <div>${tp.indirectDrivers.map(d => `<span class="driver-tag">${d}</span>`).join('')}</div>
+      </div>
+      <div class="detail-block">
+        <h4>상호작용</h4>
+        <p>${tp.interaction}</p>
+      </div>
+      <div class="detail-block">
+        <h4>불확실성</h4>
+        <p>${tp.uncertainty}</p>
+      </div>
+      <div class="detail-block">
+        <h4>준비 경로</h4>
+        <div class="prep-track">
+          <div class="prep-track-label survive">생존 / 심화 트랙</div>
+          <p style="font-size:0.85rem;color:var(--text2)">${tp.survive}</p>
+        </div>
+        <div class="prep-track" style="margin-top:0.5rem;">
+          <div class="prep-track-label transition">전환 / 이전 트랙</div>
+          <p style="font-size:0.85rem;color:var(--text2)">${tp.transition}</p>
+        </div>
+      </div>
+      <div class="detail-block">
+        <h4>메타 정보</h4>
+        <ul>
+          <li><strong>가역성:</strong> ${tp.reversibility === 'irreversible' ? '비가역' : '조건부 가역'}</li>
+          <li><strong>Innovation Platform:</strong> ${tp.ipStatus}</li>
+          <li><strong>불안 매핑:</strong> ${tp.anxieties.join(', ')}</li>
+        </ul>
+      </div>
+    </div>
+  `;
+
+  panel.classList.add('open');
+  setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
+}
+
+function closeDetail() {
+  document.getElementById('detailPanel').classList.remove('open');
+  document.querySelectorAll('.tp-card').forEach(c => c.classList.remove('active'));
+}
+
+function renderAnxiety() {
+  const grid = document.getElementById('anxietyGrid');
+  grid.innerHTML = anxieties.map(a => `
+    <div class="anxiety-card">
+      <div class="anxiety-id">${a.id}</div>
+      <div class="anxiety-name">${a.name}</div>
+      <div class="anxiety-bar-bg">
+        <div class="anxiety-bar" style="width:0%;background:${a.color}" data-width="${a.bar}"></div>
+      </div>
+      <div class="anxiety-years">
+        ${a.peaks.map(p => `<span class="anxiety-year-tag peak">${p} peak</span>`).join('')}
+        ${a.resolve ? `<span class="anxiety-year-tag resolve">${a.resolve} 완화</span>` : '<span class="anxiety-year-tag" style="background:rgba(239,68,68,0.1);color:#f87171;">미해결</span>'}
+      </div>
+      <div class="anxiety-mitigation">${a.mitigation}</div>
+    </div>
+  `).join('');
+}
+
+function renderPlatform() {
+  const container = document.getElementById('platformTimeline');
+  container.innerHTML = platformPhases.map(p => `
+    <div class="platform-phase">
+      <div class="phase-label" style="color:${p.color}">${p.phase}</div>
+      <div class="phase-status">${p.status}</div>
+      <p style="font-size:0.85rem;color:var(--text2);margin-bottom:1.25rem;">${p.desc}</p>
+      <ul class="criteria-list">
+        ${p.criteria.map(c => `
+          <li class="criteria-item">
+            <span class="criteria-dot ${c.status}"></span>
+            <span style="color:var(--text2)">${c.name}</span>
+            <span style="margin-left:auto;font-size:0.7rem;font-weight:600;color:${c.status==='yes'?'var(--green)':c.status==='partial'?'var(--yellow)':'var(--red)'}">
+              ${c.status === 'yes' ? 'YES' : c.status === 'partial' ? 'PARTIAL' : 'NO'}
+            </span>
+          </li>
+        `).join('')}
+      </ul>
+    </div>
+  `).join('');
+}
+
+function renderScenes() {
+  const list = document.getElementById('sceneList');
+  list.innerHTML = scenes.map((s, i) => `
+    <div class="scene ${i===0?'active':''}" onclick="toggleScene(this)">
+      <div class="scene-time">${s.time}</div>
+      <div class="scene-location">${s.location}</div>
+      <div class="scene-title">${s.title}</div>
+      <div class="scene-body">
+        <p>${s.body}</p>
+        <div class="scene-highlight">${s.highlight}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleScene(el) {
+  const wasActive = el.classList.contains('active');
+  document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+  if (!wasActive) el.classList.add('active');
+}
+
+function renderChecklist() {
+  Object.keys(checklistData).forEach(key => {
+    const container = document.getElementById(`tab-${key}`);
+    container.innerHTML = checklistData[key].map((item, i) => `
+      <div class="check-item" data-group="${key}" data-index="${i}" onclick="toggleCheck(this)">
+        <div class="check-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="check-text">${item}</div>
+      </div>
+    `).join('');
+  });
+}
+
+function toggleCheck(el) {
+  el.classList.toggle('checked');
+  updateProgress();
+}
+
+function updateProgress() {
+  const total = document.querySelectorAll('.check-item').length;
+  const checked = document.querySelectorAll('.check-item.checked').length;
+  const pct = Math.round((checked / total) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = pct + '%';
+}
+
+function renderRecommendations() {
+  Object.keys(recommendations).forEach(key => {
+    const container = document.getElementById(`rec-${key}`);
+    container.innerHTML = recommendations[key].map((r, i) => `
+      <div class="rec-item">
+        <div class="rec-num">REC ${String(i+1).padStart(2,'0')}</div>
+        <h4>${r.title}</h4>
+        <p>${r.desc}</p>
+      </div>
+    `).join('');
+  });
+}
+
+// ===== TAB SWITCHING =====
+function setupTabs(tabsId, prefix) {
+  document.getElementById(tabsId).addEventListener('click', e => {
+    const tab = e.target.closest('[data-tab]');
+    if (!tab) return;
+    document.querySelectorAll(`#${tabsId} > *`).forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const containers = tabsId === 'checklistTabs'
+      ? document.querySelectorAll('.checklist-group')
+      : document.querySelectorAll('.rec-content');
+    containers.forEach(c => c.classList.remove('active'));
+    document.getElementById(`${prefix}${tab.dataset.tab}`).classList.add('active');
+  });
+}
+
+// ===== SCROLL ANIMATIONS =====
+function setupScrollAnimations() {
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        // Animate anxiety bars
+        entry.target.querySelectorAll('.anxiety-bar').forEach(bar => {
+          setTimeout(() => { bar.style.width = bar.dataset.width + '%'; }, 200);
+        });
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+}
+
+// ===== NAV SCROLL =====
+function setupNav() {
+  const nav = document.getElementById('mainNav');
+  const links = document.querySelectorAll('.nav-links a');
+  const sections = document.querySelectorAll('section[id]');
+
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 50);
+
+    let current = '';
+    sections.forEach(section => {
+      const top = section.offsetTop - 100;
+      if (window.scrollY >= top) current = section.id;
+    });
+    links.forEach(link => {
+      link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+    });
+  });
+}
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', () => {
+  renderTimeline();
+  renderAnxiety();
+  renderPlatform();
+  renderScenes();
+  renderChecklist();
+  renderRecommendations();
+  setupTabs('checklistTabs', 'tab-');
+  setupTabs('recTabs', 'rec-');
+  setupScrollAnimations();
+  setupNav();
+});
+</script>
+</body>
+</html>
