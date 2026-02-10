@@ -1,5 +1,11 @@
 import { format, parseISO } from "date-fns";
 import { enUS } from "date-fns/locale";
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
 
 export function formatDate(dateString: string, formatStr: string = "MMMM d, yyyy"): string {
   try {
