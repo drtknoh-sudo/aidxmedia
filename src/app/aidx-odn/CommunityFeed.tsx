@@ -3,11 +3,14 @@
 import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { PenSquare, AlertTriangle } from "lucide-react";
-import { PostCard, SortSelector } from "@/components/community";
+import { PenSquare, AlertCircle } from "lucide-react";
+import { ODNPageHeader } from "@/components/community/odn/ODNPageHeader";
+import { HotTopicsSection } from "@/components/community/odn/HotTopicsSection";
+import { TagMenu } from "@/components/community/odn/TagMenu";
+import { FeedPostItem } from "@/components/community/odn/FeedPostItem";
+import { UserStatusSidebar } from "@/components/community/odn/UserStatusSidebar";
+import { ODNFooter } from "@/components/community/odn/ODNFooter";
 import type { Post } from "@/core/entities/types";
-
-type SortOption = "hot" | "new" | "top";
 
 interface PostsResponse {
   posts: Post[];
@@ -17,254 +20,221 @@ interface PostsResponse {
   userVotes: Record<string, number>;
 }
 
+const FEED_LIMIT = 7;
+
 export function CommunityFeed() {
   const { data: session, status } = useSession();
-  const [sort, setSort] = useState<SortOption>("hot");
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [pinnedPosts, setPinnedPosts] = useState<Post[]>([]);
+  const isAuthenticated = status === "authenticated";
+
+  // Feed state
+  const [feedPosts, setFeedPosts] = useState<Post[]>([]);
   const [userVotes, setUserVotes] = useState<Record<string, number>>({});
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [activeTag, setActiveTag] = useState("All");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const isAuthenticated = status === "authenticated";
+  // Hot topics state
+  const [monthlyTopic, setMonthlyTopic] = useState<Post | null>(null);
+  const [mostPopular, setMostPopular] = useState<Post | null>(null);
+  const [userProposed, setUserProposed] = useState<Post | null>(null);
+  const [popularPosts, setPopularPosts] = useState<Post[]>([]);
 
-  const fetchPosts = useCallback(async () => {
+  // Fetch hot topics from /api/community/posts?sort=hot&limit=20
+  const fetchHotTopics = useCallback(async () => {
+    try {
+      const res = await fetch("/api/community/posts?sort=hot&page=1&limit=20");
+      if (!res.ok) return;
+      const data: PostsResponse = await res.json();
+      const all = data.posts;
+
+      // Card 1: first pinned admin post (Month Topic)
+      const pinned = all.find((p) => p.isAdminPost && p.isPinned) ?? all.find((p) => p.isAdminPost) ?? all[0] ?? null;
+      setMonthlyTopic(pinned);
+
+      // Card 2: highest score overall
+      const topOverall = [...all].sort((a, b) => b.score - a.score)[0] ?? null;
+      setMostPopular(topOverall);
+
+      // Card 3: highest score non-admin
+      const topUser = [...all].filter((p) => !p.isAdminPost).sort((a, b) => b.score - a.score)[0] ?? null;
+      setUserProposed(topUser);
+
+      // Popular rankings sidebar: top 5 by hotScore
+      const ranked = [...all].sort((a, b) => (b.hotScore ?? 0) - (a.hotScore ?? 0)).slice(0, 5);
+      setPopularPosts(ranked);
+    } catch {
+      // Hot topics section will show loading state
+    }
+  }, []);
+
+  // Fetch feed posts (latest 7)
+  const fetchFeed = useCallback(async () => {
     setIsLoading(true);
     setError(null);
-
     try {
-      const response = await fetch(
-        `/api/community/posts?sort=${sort}&page=${page}&limit=20`
-      );
-
-      if (!response.ok) throw new Error("Failed to fetch posts");
-
-      const data: PostsResponse = await response.json();
-
-      // Separate pinned posts
-      const pinned = data.posts.filter((p) => p.isPinned);
-      const regular = data.posts.filter((p) => !p.isPinned);
-
-      if (page === 1) {
-        setPinnedPosts(pinned);
-        setPosts(regular);
-      } else {
-        setPosts((prev) => [...prev, ...regular]);
-      }
-
-      setUserVotes(data.userVotes);
-      setTotalPages(data.totalPages);
+      const res = await fetch(`/api/community/posts?sort=new&page=1&limit=${FEED_LIMIT}`);
+      if (!res.ok) throw new Error("Failed to load posts");
+      const data: PostsResponse = await res.json();
+      setFeedPosts(data.posts);
+      setUserVotes(data.userVotes ?? {});
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
       setIsLoading(false);
     }
-  }, [sort, page]);
+  }, []);
 
   useEffect(() => {
-    fetchPosts();
-  }, [fetchPosts]);
-
-  const handleSortChange = (newSort: SortOption) => {
-    if (newSort !== sort) {
-      setSort(newSort);
-      setPage(1);
-      setPosts([]);
-      setPinnedPosts([]);
-    }
-  };
+    fetchHotTopics();
+    fetchFeed();
+  }, [fetchHotTopics, fetchFeed]);
 
   const handleVote = async (postId: string, value: number) => {
     try {
-      const response = await fetch(`/api/community/posts/${postId}/vote`, {
+      const res = await fetch(`/api/community/posts/${postId}/vote`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ value }),
       });
-
-      if (!response.ok) throw new Error("Vote failed");
-
-      const result = await response.json();
-
-      // Update local state
-      setUserVotes((prev) => ({
-        ...prev,
-        [postId]: result.newValue,
-      }));
-
-      // Update post score
-      const updatePostScore = (post: Post) =>
-        post.id === postId ? { ...post, score: result.newScore } : post;
-
-      setPosts((prev) => prev.map(updatePostScore));
-      setPinnedPosts((prev) => prev.map(updatePostScore));
-    } catch (err) {
-      console.error("Vote error:", err);
-    }
-  };
-
-  const loadMore = () => {
-    if (page < totalPages) {
-      setPage((p) => p + 1);
+      if (!res.ok) return;
+      const result = await res.json();
+      setUserVotes((prev) => ({ ...prev, [postId]: result.newValue }));
+      setFeedPosts((prev) =>
+        prev.map((p) => (p.id === postId ? { ...p, score: result.newScore } : p))
+      );
+    } catch {
+      // silent
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Hero Banner */}
-      <section className="bg-gradient-to-r from-orange-600 to-red-600 text-white py-12">
-        <div className="max-w-5xl mx-auto px-4">
-          <div className="flex items-center gap-3 mb-4">
-            <AlertTriangle size={32} />
-            <h1 className="text-3xl md:text-4xl font-bold">
-              AI Dystopia Stories
-            </h1>
-          </div>
-          <p className="text-lg text-orange-100 max-w-2xl">
-            Explore and discuss potential AI-driven dystopia scenarios. Share
-            your visions of futures where artificial intelligence reshapes
-            society—for better or worse.
-          </p>
-        </div>
-      </section>
+    <div className="min-h-screen bg-slate-50">
+      {/* ODN-specific header (sits below the global site Header) */}
+      <ODNPageHeader />
 
-      {/* Main Content */}
-      <main className="max-w-5xl mx-auto px-4 py-6">
-        {/* Controls */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-          <SortSelector value={sort} onChange={handleSortChange} />
+      {/* Hot Topics Section */}
+      <HotTopicsSection
+        monthlyTopic={monthlyTopic}
+        mostPopular={mostPopular}
+        userProposed={userProposed}
+      />
 
-          {isAuthenticated ? (
-            <Link
-              href="/aidx-odn/submit"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 transition-colors"
-            >
-              <PenSquare size={18} />
-              Submit Story
-            </Link>
-          ) : (
-            <Link
-              href="/login"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-300 transition-colors"
-            >
-              <PenSquare size={18} />
-              Log in to Submit
-            </Link>
-          )}
-        </div>
-
-        {/* Error State */}
-        {error && (
-          <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg mb-6">
-            {error}
-            <button
-              onClick={fetchPosts}
-              className="ml-2 underline hover:no-underline"
-            >
-              Try again
-            </button>
-          </div>
-        )}
-
-        {/* Pinned Admin Posts */}
-        {pinnedPosts.length > 0 && (
-          <section className="mb-6">
-            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
-              Pinned Posts
-            </h2>
-            <div className="space-y-3">
-              {pinnedPosts.map((post) => (
-                <PostCard
-                  key={post.id}
-                  post={post}
-                  userVote={userVotes[post.id] ?? 0}
-                  onVote={isAuthenticated ? handleVote : undefined}
-                  isAuthenticated={isAuthenticated}
-                />
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Regular Posts */}
-        <section>
-          {pinnedPosts.length > 0 && posts.length > 0 && (
-            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
-              All Stories
-            </h2>
-          )}
-
-          {isLoading && posts.length === 0 ? (
-            <div className="space-y-3">
-              {[1, 2, 3].map((i) => (
-                <div
-                  key={i}
-                  className="bg-white rounded-lg border p-4 animate-pulse"
-                >
-                  <div className="flex gap-3">
-                    <div className="w-10 space-y-2">
-                      <div className="h-6 bg-gray-200 rounded" />
-                      <div className="h-4 bg-gray-200 rounded" />
-                      <div className="h-6 bg-gray-200 rounded" />
-                    </div>
-                    <div className="flex-grow space-y-2">
-                      <div className="h-3 bg-gray-200 rounded w-1/4" />
-                      <div className="h-5 bg-gray-200 rounded w-3/4" />
-                      <div className="h-4 bg-gray-200 rounded w-full" />
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : posts.length === 0 ? (
-            <div className="text-center py-12 bg-white rounded-lg border">
-              <AlertTriangle size={48} className="mx-auto text-gray-300 mb-4" />
-              <h3 className="text-lg font-medium text-gray-700 mb-2">
-                No stories yet
-              </h3>
-              <p className="text-gray-500 mb-4">
-                Be the first to share an AI dystopia scenario!
-              </p>
-              {isAuthenticated && (
+      {/* Main 2-column layout */}
+      <div className="max-w-7xl mx-auto px-4 py-6">
+        <div className="flex flex-col lg:flex-row gap-6">
+          {/* Left column (70%) */}
+          <main className="flex-1 min-w-0">
+            {/* Tag menu + Submit button row */}
+            <div className="flex items-start justify-between gap-4 mb-4">
+              <TagMenu activeTag={activeTag} onChange={setActiveTag} />
+              {isAuthenticated ? (
                 <Link
                   href="/aidx-odn/submit"
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 transition-colors"
+                  className="flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-2 bg-teal-600 text-white text-xs font-semibold rounded-lg hover:bg-teal-700 transition-colors"
                 >
-                  <PenSquare size={18} />
-                  Submit Story
+                  <PenSquare size={13} />
+                  New Post
+                </Link>
+              ) : (
+                <Link
+                  href="/login"
+                  className="flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-2 bg-white border border-gray-300 text-gray-600 text-xs font-semibold rounded-lg hover:border-teal-400 hover:text-teal-600 transition-colors"
+                >
+                  <PenSquare size={13} />
+                  Sign in to Post
                 </Link>
               )}
             </div>
-          ) : (
-            <div className="space-y-3">
-              {posts.map((post) => (
-                <PostCard
-                  key={post.id}
-                  post={post}
-                  userVote={userVotes[post.id] ?? 0}
-                  onVote={isAuthenticated ? handleVote : undefined}
-                  isAuthenticated={isAuthenticated}
-                />
-              ))}
-            </div>
-          )}
 
-          {/* Load More */}
-          {page < totalPages && (
-            <div className="mt-6 text-center">
-              <button
-                onClick={loadMore}
-                disabled={isLoading}
-                className="px-6 py-2 bg-white border rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50"
-              >
-                {isLoading ? "Loading..." : "Load More"}
-              </button>
-            </div>
-          )}
-        </section>
-      </main>
+            {/* Feed */}
+            {error ? (
+              <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center gap-3">
+                <AlertCircle size={18} className="text-red-500 flex-shrink-0" />
+                <div>
+                  <p className="text-sm text-red-700">{error}</p>
+                  <button
+                    onClick={fetchFeed}
+                    className="text-xs text-red-600 underline mt-1 hover:no-underline"
+                  >
+                    Try again
+                  </button>
+                </div>
+              </div>
+            ) : isLoading ? (
+              <div className="space-y-3">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="flex gap-4 bg-white rounded-xl border border-gray-200 p-4 animate-pulse">
+                    <div className="w-[110px] h-[80px] bg-gray-200 rounded-lg flex-shrink-0" />
+                    <div className="flex-1 space-y-2">
+                      <div className="h-3 bg-gray-200 rounded w-1/4" />
+                      <div className="h-4 bg-gray-200 rounded w-3/4" />
+                      <div className="h-3 bg-gray-200 rounded w-full" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : feedPosts.length === 0 ? (
+              <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
+                <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <PenSquare size={28} className="text-slate-400" />
+                </div>
+                <h3 className="text-base font-semibold text-gray-700 mb-2">
+                  No posts yet
+                </h3>
+                <p className="text-sm text-gray-500 mb-4">
+                  Be the first to share an AI future scenario or debate topic!
+                </p>
+                {isAuthenticated && (
+                  <Link
+                    href="/aidx-odn/submit"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-teal-600 text-white text-sm font-semibold rounded-lg hover:bg-teal-700 transition-colors"
+                  >
+                    <PenSquare size={15} />
+                    Submit First Post
+                  </Link>
+                )}
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {feedPosts.slice(0, FEED_LIMIT).map((post, i) => (
+                  <FeedPostItem
+                    key={post.id}
+                    post={post}
+                    index={i}
+                    userVote={userVotes[post.id] ?? 0}
+                    onVote={isAuthenticated ? handleVote : undefined}
+                    isAuthenticated={isAuthenticated}
+                  />
+                ))}
+              </div>
+            )}
+
+            {/* See More */}
+            {feedPosts.length >= FEED_LIMIT && (
+              <div className="mt-4 text-center">
+                <Link
+                  href="/aidx-odn/view-by-topic"
+                  className="inline-block px-6 py-2 bg-white border border-gray-300 text-sm text-gray-600 rounded-lg hover:border-teal-400 hover:text-teal-600 transition-colors"
+                >
+                  View All Posts →
+                </Link>
+              </div>
+            )}
+          </main>
+
+          {/* Right sidebar (desktop only) */}
+          <aside className="hidden lg:block w-72 flex-shrink-0">
+            <UserStatusSidebar popularPosts={popularPosts} />
+          </aside>
+        </div>
+
+        {/* Sidebar on mobile (below feed) */}
+        <div className="lg:hidden mt-6">
+          <UserStatusSidebar popularPosts={popularPosts} />
+        </div>
+      </div>
+
+      <ODNFooter />
     </div>
   );
 }

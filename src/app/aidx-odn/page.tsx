@@ -2,9 +2,9 @@ import { Metadata } from "next";
 import { CommunityFeed } from "./CommunityFeed";
 
 export const metadata: Metadata = {
-  title: "AI Dystopia Stories | AIDX ODN Community",
+  title: "AIDX ODN | Open Design Network for AI Futures",
   description:
-    "Share and discuss potential AI dystopia scenarios. Join our community to explore, debate, and learn from imagined futures where AI impacts society.",
+    "Join the AIDX Modeling Open Design Network — a community for debating AI-driven futures, proposing designs for social transitions, and building verified knowledge through open discussion.",
 };
 
 export const dynamic = "force-dynamic";
