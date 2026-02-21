@@ -65,14 +65,9 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <a
-                  href="https://odn.dinnomix.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-accent-teal transition-colors"
-                >
+                <Link href="/aidx-odn" className="hover:text-accent-teal transition-colors">
                   ODN Platform
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

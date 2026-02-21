@@ -284,14 +284,12 @@ export default function ServicesPage() {
               <Mail size={20} />
               Contact Us
             </a>
-            <a
-              href="https://odn.dinnomix.com"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/aidx-odn"
               className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-lg font-semibold transition-colors"
             >
               Explore ODN Platform <ArrowRight size={20} />
-            </a>
+            </Link>
           </div>
         </div>
       </section>
