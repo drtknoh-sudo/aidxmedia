@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import { SessionProvider } from "@/components/SessionProvider";
+import ConditionalLayout from "@/components/ConditionalLayout";
 
 export const metadata: Metadata = {
   title: "Trutha ai - The Standard for Verified AI Knowledge",
@@ -18,11 +17,11 @@ export default function RootLayout({
     <html lang="en">
       <body className="font-sans antialiased min-h-screen flex flex-col">
         <SessionProvider>
-          <Header />
-          <main className="flex-1">
-            {children}
-          </main>
-          <Footer />
+          {/*
+           * ConditionalLayout renders <Header> + <main> + <Footer> on all routes
+           * EXCEPT /aidx-odn/* where the ODN section manages its own chrome.
+           */}
+          <ConditionalLayout>{children}</ConditionalLayout>
         </SessionProvider>
       </body>
     </html>
