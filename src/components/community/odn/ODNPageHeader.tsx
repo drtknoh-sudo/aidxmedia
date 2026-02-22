@@ -8,9 +8,9 @@ import { Search } from "lucide-react";
 const GLOBAL_LINKS = [
   { label: "Main Home", href: "/" },
   { label: "News", href: "/news" },
-  { label: "Papers", href: "/research" },
+  { label: "Research", href: "/research" },
   { label: "Commentary", href: "/commentary" },
-  { label: "Service", href: "/services" },
+  { label: "Services", href: "/services" },
 ];
 
 const LOCAL_NAV = [
